@@ -48,8 +48,16 @@ namespace JupiterCapstone
             services.Configure<TokenConfiguration>(appSettingsSection);
 
             services.AddScoped<IIdentityService, IdentityService>();
+          
             services.AddScoped<IGoogleIdentity, GoogleIdentity>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICategory, CategoryAccess>();
+            services.AddScoped<ISubCategory, SubCategoryAccess>();
+            services.AddScoped<IProduct, ProductAccess>();
+            services.AddScoped<ICart, CartAccess>();
+            services.AddScoped<IOrder, OrderAccess>();
+            services.AddScoped<IPayment, PaymentAccess>();
+            services.AddScoped<IWishList, WishListAccess>();
 
             // For Identity  
             services.AddIdentity<User, IdentityRole>()

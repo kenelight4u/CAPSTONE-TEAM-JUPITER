@@ -6,20 +6,27 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Models
 {
-    public class Payment
+    public class CardDetail
     {
         [Key]
         public string Id { get; set; }
+
         [Required]
-        public decimal Amount { get; set; }
+        public string CardHolderName { get; set; }
+
         [Required]
-        public string TransactionId { get; set; }
-        public DateTime PaymentDateTime { get; set; }
+        public string CardNumber { get; set; }
+
         [Required]
-        public string PaymentStatus { get; set; } 
+        public DateTime ExpiryDate { get; set; }
+
+        [Required]
+        [MaxLength(3)]
+        public int CCV { get; set; }
+
         public virtual User User { get; set; }
+
+        [Required]
         public string UserId { get; set; }
-        public virtual Order Order { get; set; }
-        public string OrderId { get; set; }
     }
 }
