@@ -2,6 +2,8 @@ using JupiterCapstone.Data;
 using JupiterCapstone.Models;
 using JupiterCapstone.Services;
 using JupiterCapstone.Services.AuthorizationServices;
+using JupiterCapstone.Services.GoogleServices;
+using JupiterCapstone.Services.GoogleServices.IGoogleService;
 using JupiterCapstone.Services.IService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -46,6 +48,8 @@ namespace JupiterCapstone
             services.Configure<TokenConfiguration>(appSettingsSection);
 
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<IGoogleIdentity, GoogleIdentity>();
+            services.AddScoped<IUserService, UserService>();
 
             // For Identity  
             services.AddIdentity<User, IdentityRole>()

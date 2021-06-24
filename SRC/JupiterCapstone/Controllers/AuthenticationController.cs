@@ -1,6 +1,7 @@
 ﻿using JupiterCapstone.DTO;
 using JupiterCapstone.Models;
 using JupiterCapstone.Services.AuthorizationServices;
+using JupiterCapstone.Services.GoogleServices.IGoogleService;
 using JupiterCapstone.Services.IService;
 using JupiterCapstone.Static;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace JupiterCapstone.Controllers
 {
@@ -24,11 +26,14 @@ namespace JupiterCapstone.Controllers
 
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AuthenticationController(IIdentityService identityService, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        private readonly IGoogleIdentity _googleIdentity;
+
+        public AuthenticationController(IIdentityService identityService, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IGoogleIdentity googleIdentity)
         {
             _identityService = identityService;
             _userManager = userManager;
             _roleManager = roleManager;
+            _googleIdentity = googleIdentity;
         }
 
         [Route("login")]
@@ -50,7 +55,7 @@ namespace JupiterCapstone.Controllers
         //Remember to shorten the code to a service class
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] Register model)
+        public async Task<IActionResult> RegisterAsync([FromBody] Register model)
         {
             var emailExists = await _userManager.FindByEmailAsync(model.Email);
 
@@ -74,7 +79,7 @@ namespace JupiterCapstone.Controllers
 
         [HttpPost]
         [Route("register-admin")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] Register model)
+        public async Task<IActionResult> RegisterAdminAsync([FromBody] Register model)
         {
             var emailExists = await _userManager.FindByEmailAsync(model.Email);
             if (emailExists != null)
@@ -105,6 +110,34 @@ namespace JupiterCapstone.Controllers
             }
 
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+        }
+
+        //Not tested yet...
+        [HttpPost]
+        [Route("google-signIn")]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> GoogleLogin(GoogleLoginRequest request)
+        {
+            Payload payload = new Payload();
+            try
+            {
+                payload = await ValidateAsync(request.IdToken, new ValidationSettings
+                {
+                    Audience = new[] { "646800471761-dtbu1l4n08qmeb7lbus8lvjvhjfe8a66.apps.googleusercontent.com" }
+                });
+                // It is important to add your ClientId as an audience in order to make sure
+                // that the token is for your application!
+            }
+            catch
+            {
+                // Invalid token
+            }
+
+            var user = await _googleIdentity.GetOrCreateExternalLoginUser("google", payload.Subject, payload.Email, payload.GivenName, payload.FamilyName);
+
+            var token = await _identityService.GenerateToken(user);
+
+            return Ok(token);
         }
     }
 }

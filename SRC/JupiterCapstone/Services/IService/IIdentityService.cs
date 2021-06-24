@@ -1,4 +1,5 @@
 ﻿using JupiterCapstone.DTO;
+using JupiterCapstone.Models;
 using JupiterCapstone.Services.AuthorizationServices;
 using JupiterCapstone.Static;
 using System;
@@ -13,5 +14,7 @@ namespace JupiterCapstone.Services.IService
         Task<ResponseModel<TokenModel>> LoginAsync(LogIn login);
 
         Task<ResponseModel<TokenModel>> RefreshTokenAsync(TokenModel request);
+
+        Task<ResponseModel<TokenModel>> GenerateToken(User user);
     }
 }
