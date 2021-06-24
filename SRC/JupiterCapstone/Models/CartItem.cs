@@ -6,20 +6,21 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Models
 {
-    public class Payment
+    public class CartItem 
     {
         [Key]
         public string Id { get; set; }
+        public virtual Product Product { get; set; }
         [Required]
-        public decimal Amount { get; set; }
+        public string ProductId { get; set; }
         [Required]
-        public string TransactionId { get; set; }
-        public DateTime PaymentDateTime { get; set; }
+        public double Quantity { get; set; }
         [Required]
-        public string PaymentStatus { get; set; } 
-        public virtual User User { get; set; }
-        public string UserId { get; set; }
+        public decimal Total { get; set; }
         public virtual Order Order { get; set; }
         public string OrderId { get; set; }
+        public virtual User User { get; set; }
+        public string UserId { get; set; }
+
     }
 }
