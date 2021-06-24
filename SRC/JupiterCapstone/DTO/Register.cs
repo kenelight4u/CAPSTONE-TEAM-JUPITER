@@ -8,9 +8,6 @@ namespace JupiterCapstone.DTO
 {
     public class Register
     {
-        //[Required(ErrorMessage = "User Name is required")]
-        //public string UserName { get; set; }
-
         [Required(ErrorMessage = "First Name is required")]
         public string FirstName { get; set; }
 
@@ -27,6 +24,5 @@ namespace JupiterCapstone.DTO
         [Required]
         [Compare(nameof(Password))]
         public string ConfirmPassword { get; set; }
-
     }
 }

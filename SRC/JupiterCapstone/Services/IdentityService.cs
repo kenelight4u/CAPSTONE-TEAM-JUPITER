@@ -35,7 +35,7 @@ namespace JupiterCapstone.Services
             _tokenValidationParameters = tokenValidationParameters;
         }
 
-
+        // Validate the login credentials and call to generate a JWT token 
         public async Task<ResponseModel<TokenModel>> LoginAsync(LogIn login)
         {
             ResponseModel<TokenModel> response = new ResponseModel<TokenModel>();
@@ -71,6 +71,26 @@ namespace JupiterCapstone.Services
 
                 throw ex;
             }
+        }
+
+        // Generate a JWT token for Login via Google
+        public async Task<ResponseModel<TokenModel>> GenerateToken(User user)
+        {
+            ResponseModel<TokenModel> response = new ResponseModel<TokenModel>();
+
+            AuthenticationResult authenticationResult = await AuthenticateAsync(user);
+            if (authenticationResult != null && authenticationResult.Success)
+            {
+                response.Data = new TokenModel() { Token = authenticationResult.Token, RefreshToken = authenticationResult.RefreshToken };
+            }
+            else
+            {
+                response.Message = "Something went wrong!";
+                response.IsSuccess = false;
+
+            }
+
+            return response;
         }
 
         private async Task<AuthenticationResult> AuthenticateAsync(User user)
@@ -248,5 +268,7 @@ namespace JupiterCapstone.Services
                    jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
                        StringComparison.InvariantCultureIgnoreCase);
         }
+
+       
     }
 }
