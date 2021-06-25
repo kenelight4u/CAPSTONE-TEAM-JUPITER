@@ -1,4 +1,7 @@
-﻿using JupiterCapstone.Models;
+﻿using JupiterCapstone.Data;
+using JupiterCapstone.Dtos.Admin;
+using JupiterCapstone.Dtos.User;
+using JupiterCapstone.Models;
 using JupiterCapstone.Services.IService;
 using System;
 using System.Collections.Generic;
@@ -9,29 +12,85 @@ namespace JupiterCapstone.Services
 {
     public class SubCategoryAccess : ISubCategory
     {
-        public void AddSubCategory(List<SubCategory> subcategory)
+        private readonly ApplicationDbContext _context;
+
+        public SubCategoryAccess(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+
         }
 
-        public void DeleteSubCategory(List<SubCategory> subcategory)
+        public void AddSubCategory(List<AddSubCategoryDto> addSubcategories)
         {
-            throw new NotImplementedException();
+            if (addSubcategories == null)
+            {
+                throw new ArgumentNullException(nameof(addSubcategories));
+
+            }
+            else
+            {
+                foreach (var subCategory in addSubcategories)
+                {
+                    SubCategory subCategoryDb = new SubCategory()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        SubCategoryName = subCategory.SubCategoryName,
+
+                    };
+                    _context.SubCategories.Add(subCategoryDb);
+                    SaveChanges();
+
+                }
+            }
         }
 
-        public IEnumerable<SubCategory> GetAllCategories()
+        public void DeleteSubCategory(List<string> deleteSubcategories)
         {
-            throw new NotImplementedException();
+            var allsubCategories = _context.SubCategories.ToList();
+
+            foreach (var subcategory in deleteSubcategories)
+            {
+                var dbSubCategory = allsubCategories.FirstOrDefault(e => e.Id == subcategory);
+                _context.SubCategories.Remove(dbSubCategory);
+
+
+            }
+            SaveChanges();
         }
 
-        public bool SaveChanges()
+        public IEnumerable<ViewSubCategoryDto> GetAllSubCategories()
         {
-            throw new NotImplementedException();
+            var allSubCategories = _context.SubCategories.ToList();
+            List<ViewSubCategoryDto> viewsubCategory = new List<ViewSubCategoryDto>();
+
+            foreach (var subCategory in allSubCategories)
+            {
+                viewsubCategory.Add(new ViewSubCategoryDto()
+                {
+                    SubCategoryId = subCategory.Id,
+                    SubCategoryName = subCategory.SubCategoryName
+
+                });
+            }
+            return viewsubCategory;
         }
 
-        public void UpdateSubCategory(List<SubCategory> subcategory)
+
+        public void UpdateSubCategory(List<UpdateSubCategoryDto> updateSubcategories)
         {
-            throw new NotImplementedException();
+            var oldCategory = _context.SubCategories.ToList();
+            foreach (var subcategory in updateSubcategories)
+            {
+                var categoryDb = oldCategory.FirstOrDefault(e => e.Id == subcategory.SubCategoryId);
+                categoryDb.SubCategoryName = subcategory.SubCategoryName;
+
+            }
+            SaveChanges();
+        }
+
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
         }
     }
 }

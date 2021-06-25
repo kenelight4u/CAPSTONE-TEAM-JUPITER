@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Services.IService
 {
-    interface IPayment
+    public interface IPayment
     {
         void PayNow();
         void AddPayment();

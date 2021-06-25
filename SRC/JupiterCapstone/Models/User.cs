@@ -13,34 +13,34 @@ namespace JupiterCapstone.Models
         public User()
         {
             RefreshToken = new HashSet<RefreshToken>();
+            CardDetails = new HashSet<CardDetail>();
+            CartItems = new HashSet<CartItem>();
+            UsersAddress = new HashSet<UsersAddress>();
+            WishListItems = new HashSet<WishListItem>();
+            Payments = new HashSet<Payment>();
+            Orders = new HashSet<Order>();
         }
             
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
-
-        public string Address { get; set; }
-
-        public string PostalCode { get; set; }
-
-        public string City { get; set; }
-
+       
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         public DateTime LastModifiedDate { get; set; }
 
         public virtual ICollection<RefreshToken> RefreshToken { get; set; }
 
-        // will need them later
+        public IEnumerable<CardDetail> CardDetails { get; set; }
+        public IEnumerable<UsersAddress> UsersAddress { get; set; } 
 
-        //public virtual IEnumerable<Order> Orders { get; set; }
 
-        //public virtual IEnumerable<Payment> Payments { get; set; }
+        public virtual IEnumerable<Order> Orders { get; set; }
 
-        // public virtual IEnumerable<PaymentCard> PaymentCards { get; set; }
+        public virtual IEnumerable<Payment> Payments { get; set; }
 
-        // IEnumerable<CartItem> CartItems { get; set; }
+        public virtual IEnumerable<CartItem> CartItems { get; set; }
 
-       // public IEnumerable<WishListItem> WishListItems { get; set; }
+        public IEnumerable<WishListItem> WishListItems { get; set; }
     }
 }

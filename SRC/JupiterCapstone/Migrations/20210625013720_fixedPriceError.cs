@@ -2,7 +2,7 @@
 
 namespace JupiterCapstone.Migrations
 {
-    public partial class MakingUserNameNullable : Migration
+    public partial class fixedPriceError : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
