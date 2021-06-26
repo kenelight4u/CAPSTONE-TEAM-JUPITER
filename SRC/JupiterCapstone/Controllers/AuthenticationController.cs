@@ -66,7 +66,9 @@ namespace JupiterCapstone.Controllers
             {
                 UserName = model.Email,
                 Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
+                PasswordHash = model.Password,
+                
+                //SecurityStamp = Guid.NewGuid().ToString(),
                 FirstName = model.FirstName,
                 LastName = model.LastName
             };
@@ -133,7 +135,16 @@ namespace JupiterCapstone.Controllers
                 // Invalid token
             }
 
-            var user = await _googleIdentity.GetOrCreateExternalLoginUser("google", payload.Subject, payload.Email, payload.GivenName, payload.FamilyName);
+            var googleUser = new GoogleLoginRequest()
+            {
+                Provider = "google",
+                Key = payload.Subject,
+                Email = payload.Email,
+                FirstName = payload.GivenName,
+                LastName = payload.FamilyName
+            };
+
+            var user = await _googleIdentity.GetOrCreateExternalLoginUser(googleUser);
 
             var token = await _identityService.GenerateToken(user);
 
