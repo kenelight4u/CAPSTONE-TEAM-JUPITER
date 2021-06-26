@@ -86,47 +86,7 @@ namespace JupiterCapstone.Controllers
 
             return NoContent();
 
-            
-
         }
-
-
-        [Route("refresh")]
-        [HttpPost]
-        public async Task<IActionResult> Refresh( EmailForToken model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var user =  await _userManager.FindByEmailAsync(model.Email);
-
-            if (user == null)
-            {
-                return Ok("Ok");
-            }
-
-            if (user.Email == null)
-            {
-                throw new InvalidOperationException("cannot send emai. Email address not configured");
-            }
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-            System.Diagnostics.Process.Start(
-                String.Format(
-                    HttpUtility.UrlEncode(user.UserName),
-                    HttpUtility.UrlEncode(token)
-                    )
-                );
-            SendEmailAsync(token, user)
-            
-             return Ok("OK");
-        }
-
-
-
-
 
         //updating user details
         [HttpPatch]
