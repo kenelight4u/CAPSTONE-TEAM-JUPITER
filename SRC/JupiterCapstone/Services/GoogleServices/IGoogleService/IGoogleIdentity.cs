@@ -1,4 +1,5 @@
-﻿using JupiterCapstone.Models;
+﻿using JupiterCapstone.DTO;
+using JupiterCapstone.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,6 @@ namespace JupiterCapstone.Services.GoogleServices.IGoogleService
 {
     public interface IGoogleIdentity
     {
-        Task<User> GetOrCreateExternalLoginUser(string provider, string key, string email, string firstName, string lastName);
+        Task<User> GetOrCreateExternalLoginUser(GoogleLoginRequest googleModel);
     }
 }
