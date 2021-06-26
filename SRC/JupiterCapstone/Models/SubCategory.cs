@@ -8,6 +8,10 @@ namespace JupiterCapstone.Models
 {
     public class SubCategory
     {
+        public SubCategory()
+        {
+            Products = new HashSet<Product>();
+        }
 
         [Key]
         public string Id { get; set; }
@@ -19,7 +23,7 @@ namespace JupiterCapstone.Models
         public DateTime LastModified { get; set; }
         public virtual Category Category { get; set; }
         public string CategoryId { get; set; }
-        public virtual List<Product> Products { get; set; }
+        public virtual IEnumerable<Product> Products { get; set; }
 
     }
 }

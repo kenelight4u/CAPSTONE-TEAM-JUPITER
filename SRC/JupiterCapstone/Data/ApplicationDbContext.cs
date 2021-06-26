@@ -17,6 +17,18 @@ namespace JupiterCapstone.Data
         }
 
         public virtual DbSet<RefreshToken> RefreshToken { get; set; }
+        public virtual DbSet<CardDetail> CardDetails { get; set; }
+        //public virtual DbSet<Cart> Carts { get; set; }
+        //public virtual DbSet<CartItem> CartItems { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<SubCategory> SubCategories { get; set; }
+        public virtual DbSet<WishList> WishLists { get; set; }
+        //public virtual DbSet<WishListItem> WishListItems { get; set; } 
+        public virtual DbSet<UsersAddress> UsersAddresses { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -59,5 +71,6 @@ namespace JupiterCapstone.Data
         
         }
         //partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
     }
 }

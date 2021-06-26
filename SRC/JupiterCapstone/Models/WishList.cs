@@ -7,8 +7,12 @@ namespace JupiterCapstone.Models
 {
     public class WishList
     {
+        public WishList()
+        {
+            WishListItems = new HashSet<WishListItem>();
+        }
         public string Id { get; set; }
-        public virtual List<WishListItem> WishItems { get; set; } 
+        public virtual IEnumerable<WishListItem> WishListItems { get; set; } 
      
     }
 }

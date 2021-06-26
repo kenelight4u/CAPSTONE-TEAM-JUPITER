@@ -22,7 +22,7 @@ namespace JupiterCapstone.Models
 
         [Required]
         [MaxLength(3)]
-        public int CCV { get; set; }
+        public int CVV { get; set; } 
 
         public virtual User User { get; set; }
 

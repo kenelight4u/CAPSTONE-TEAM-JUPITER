@@ -1,4 +1,7 @@
-﻿using JupiterCapstone.Models;
+﻿using JupiterCapstone.Data;
+using JupiterCapstone.Dtos.Admin;
+using JupiterCapstone.Dtos.User;
+using JupiterCapstone.Models;
 using JupiterCapstone.Services.IService;
 using System;
 using System.Collections.Generic;
@@ -9,29 +12,85 @@ namespace JupiterCapstone.Services
 {
     public class CategoryAccess : ICategory
     {
-        public void AddCategory(List<Category> category)
+        private readonly ApplicationDbContext _context;
+
+        public CategoryAccess(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+
         }
 
-        public void DeleteCategory(List<Category> category)
+        public void AddCategory(List<AddCategoryDto> categoriesToAdd)
         {
-            throw new NotImplementedException();
+            if (categoriesToAdd==null)
+            {
+                throw new ArgumentNullException(nameof(categoriesToAdd));
+
+            }
+            else
+            {
+                foreach (var category in categoriesToAdd)
+                {
+                    Category categoryDb = new Category()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        CategoryName = category.CategoryName
+
+                    };
+                    _context.Categories.Add(categoryDb);
+                    SaveChanges();
+
+
+                }
+            }
         }
 
-        public IEnumerable<Category> GetAllCategories()
+        public void DeleteCategory(List<string> categoriesToDelete)
         {
-            throw new NotImplementedException();
+            var allCategories = _context.Categories.ToList();
+
+            foreach (var category in categoriesToDelete)
+            {
+                var dbCategory = allCategories.FirstOrDefault(e => e.Id == category);
+                _context.Categories.Remove(dbCategory);
+
+
+            }
+            SaveChanges();
         }
 
-        public bool SaveChanges()
+        public IEnumerable<ViewCategoryDto> GetAllCategories()
         {
-            throw new NotImplementedException();
+            var allCategories = _context.Categories.ToList();
+            List<ViewCategoryDto> viewCategories = new List<ViewCategoryDto>();
+            foreach (var category in allCategories)
+            {
+                viewCategories.Add(new ViewCategoryDto() { 
+                    CategoryId=category.Id,
+                    CategoryName=category.CategoryName
+        
+                
+                });;
+
+            }
+            return viewCategories;
         }
 
-        public void UpdateCategory(List<Category> category)
+        public void SaveChanges()
         {
-            throw new NotImplementedException();
+            _context.SaveChanges();
+        }
+
+        public void UpdateCategory(List<UpdateCategoryDto> categoriesToUpdate)
+        {
+            var oldCategory = _context.Categories.ToList();
+            foreach (var category in categoriesToUpdate)
+            {
+                var categoryDb = oldCategory.FirstOrDefault(e => e.Id ==category.CategoryId);
+                categoryDb.CategoryName = category.CategoryName;
+
+            }
+            SaveChanges();
         }
     }
 }

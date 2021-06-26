@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Services.IService
 {
-    interface IOrder
+    public interface IOrder
     {
         void AddOrders(List<Order> order);
         void CancelOrder(List<Order> order);

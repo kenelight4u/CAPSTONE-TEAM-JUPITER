@@ -7,6 +7,6 @@ namespace JupiterCapstone.Dtos.Admin
 {
     public class AddSubCategoryDto
     {
-        public string SubCategory { get; set; }
+        public string SubCategoryName { get; set; }
     }
 }

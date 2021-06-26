@@ -1,4 +1,6 @@
-﻿using JupiterCapstone.Models;
+﻿using JupiterCapstone.Dtos.Admin;
+using JupiterCapstone.Dtos.User;
+using JupiterCapstone.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Services.IService
 {
-     interface ISubCategory
+     public interface ISubCategory
     {
-        IEnumerable<SubCategory> GetAllCategories();//for a user
-        void AddSubCategory(List<SubCategory> subcategory);
-        void UpdateSubCategory(List<SubCategory> category);
-        void DeleteSubCategory(List<SubCategory> subcategory);
-        bool SaveChanges();
+        IEnumerable<ViewSubCategoryDto> GetAllSubCategories();//for a user
+        void AddSubCategory(List<AddSubCategoryDto> addSubcategories);
+        void UpdateSubCategory(List<UpdateSubCategoryDto> updateSubcategories);
+        void DeleteSubCategory(List<string> deleteSubcategories); 
+        void SaveChanges();
     }
 }
