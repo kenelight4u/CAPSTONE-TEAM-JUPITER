@@ -11,6 +11,10 @@ namespace JupiterCapstone.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User>
     {
+        public ApplicationDbContext()
+        {
+        }
+
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
 
