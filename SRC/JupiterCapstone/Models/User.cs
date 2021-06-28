@@ -20,7 +20,11 @@ namespace JupiterCapstone.Models
             Payments = new HashSet<Payment>();
             Orders = new HashSet<Order>();
         }
-            
+
+        public override string PasswordHash { get; set; }
+
+        public string ResetPasswordToken { get; set; }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -32,8 +36,8 @@ namespace JupiterCapstone.Models
         public virtual ICollection<RefreshToken> RefreshToken { get; set; }
 
         public IEnumerable<CardDetail> CardDetails { get; set; }
-        public IEnumerable<UsersAddress> UsersAddress { get; set; } 
 
+        public IEnumerable<UsersAddress> UsersAddress { get; set; } 
 
         public virtual IEnumerable<Order> Orders { get; set; }
 
