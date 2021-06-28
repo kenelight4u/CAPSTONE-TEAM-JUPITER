@@ -67,25 +67,6 @@ namespace JupiterCapstone.Services
 
         }
 
-        public string GetProductPriceById(string productId)
-        {
-
-            var product = _context.Products.Where(p => p.Id == productId).ToList();
-            
-            if (product != null)
-            {
-                decimal price = 0;
-
-                foreach (var value in product)
-                {
-                    price = value.Price;
-                    return price.ToString();
-                }
-            }
-            return null;
-         
-        }
-
         public IEnumerable<ViewProductDto> GetAllProducts()
         {
             var products = _context.Products.ToList();

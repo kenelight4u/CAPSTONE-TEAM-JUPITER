@@ -10,7 +10,6 @@ namespace JupiterCapstone.Services.IService
 {
     public interface IPayment
     {
-        void PayNow();
         PaymentOM GetPaymentById(string paymentId);
         bool UpdatePayment(PaymentEM model);
         bool DeletePayment(string productId);

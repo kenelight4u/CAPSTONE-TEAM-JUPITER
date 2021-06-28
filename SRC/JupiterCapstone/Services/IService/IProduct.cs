@@ -17,6 +17,5 @@ namespace JupiterCapstone.Services.IService
         IEnumerable<ViewProductDto> GetProductsByName(List<string>products);
         void SaveChanges();
 
-        string GetProductPriceById(string productId);
     }
 }
