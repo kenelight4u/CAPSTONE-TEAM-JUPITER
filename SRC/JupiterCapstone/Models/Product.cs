@@ -39,7 +39,6 @@ namespace JupiterCapstone.Models
         public string Status { get; set; }
         public DateTime CreatedDateTime { get; set; } = DateTime.Now;
         public DateTime LastModified { get; set; }
-
         public virtual SubCategory SubCategory { get; set; } 
         public string SubCategoryId { get; set; }
 

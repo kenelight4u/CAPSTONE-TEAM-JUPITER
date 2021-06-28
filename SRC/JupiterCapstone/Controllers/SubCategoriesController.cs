@@ -19,6 +19,22 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpGet]
+        [Route("categoryId")]
+        public async Task<IActionResult> GetSubCategoriesByCategoryId([FromQuery] string categoryId)
+        {
+            if (categoryId==null)
+            {
+                return BadRequest();
+            }
+            var subCategories = await _repository.GetSubCategoriesByCategoryIdAsync(categoryId);
+            if (subCategories==null)
+            {
+                return NotFound();
+            }
+            return Ok(subCategories);
+        }
+
+       /* [HttpGet]
         public IActionResult GetAllSubCategories()
         {
             var subCategories = _repository.GetAllSubCategories().ToList();
@@ -28,31 +44,48 @@ namespace JupiterCapstone.Controllers
             }
 
             return Ok(subCategories);
-        }
+        }*/
 
         [HttpPost]
         [Route("add")]
-        public IActionResult AddSubCategories([FromBody] List<AddSubCategoryDto> addSubCategories)
+        public async Task<IActionResult> AddSubCategories([FromBody] List<AddSubCategoryDto> addSubCategories)
         {
-            _repository.AddSubCategory(addSubCategories);
+            var reponse = await _repository.AddSubCategoryAsync(addSubCategories);
+            if (!reponse)
+            {
+                return BadRequest();
+
+            }
+          
             return NoContent();
 
         }
         [HttpPut]
         [Route("update")]
-        public IActionResult UpdateSubCategories([FromBody] List<UpdateSubCategoryDto> updateSubCategories)
+        public async Task<IActionResult> UpdateSubCategories([FromBody] List<UpdateSubCategoryDto> updateSubCategories)
         {
-            _repository.UpdateSubCategory(updateSubCategories);
+           var response=await _repository.UpdateSubCategoryAsync(updateSubCategories);
+            if (!response)
+            {
+                return BadRequest();
+
+            }
             return NoContent();
 
         }
         [HttpDelete]
         [Route("delete")]
-        public IActionResult DeleteSubCategories(List<string> deleteSubCategories) 
+        public async Task<IActionResult> DeleteSubCategories(List<string> deleteSubCategories) 
         {
-            _repository.DeleteSubCategory(deleteSubCategories);
+            if (deleteSubCategories.Count==0)
+            {
+                return BadRequest();
+
+            }
+           await _repository.DeleteSubCategoryAsync(deleteSubCategories);
             return NoContent();
         }
+       
         
     }
 }
