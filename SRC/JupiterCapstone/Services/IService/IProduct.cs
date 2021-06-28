@@ -17,5 +17,6 @@ namespace JupiterCapstone.Services.IService
         Task<IEnumerable<ViewProductDto>> GetProductsByNameAsync(List<string>products);
         Task<IEnumerable<ViewProductDto>> GetProductsBySubCategoryIdAsync(string subCategoryId);
        
+
     }
 }

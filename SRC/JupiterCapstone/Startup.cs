@@ -1,5 +1,7 @@
 using JupiterCapstone.Data;
 using JupiterCapstone.Models;
+using JupiterCapstone.Profiles;
+using JupiterCapstone.SendGrid;
 using JupiterCapstone.Services;
 using JupiterCapstone.Services.AuthorizationServices;
 using JupiterCapstone.Services.GoogleServices;
@@ -10,6 +12,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +21,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MyApp;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,10 +59,27 @@ namespace JupiterCapstone
             services.AddScoped<ICategory, CategoryAccess>();
             services.AddScoped<ISubCategory, SubCategoryAccess>();
             services.AddScoped<IProduct, ProductAccess>();
-            services.AddScoped<ICart, CartAccess>();
+            //services.AddScoped<ICart, CartAccess>();
             services.AddScoped<IOrder, OrderAccess>();
             services.AddScoped<IPayment, PaymentAccess>();
-            services.AddScoped<IWishList, WishListAccess>();
+           // services.AddScoped<IWishList, WishListActions>();
+
+            services.AddControllers().AddNewtonsoftJson(s =>
+            {
+                s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
+
+            //registering Send Grid 
+            services.AddTransient<IEmailSender, SendGridEmailSender>();
+            services.Configure<SendGridEmailSenderOptions>(options =>
+            {
+                options.ApiKey = Configuration["ExternalProviders:SendGrid:ApiKey"];
+                options.SenderEmail = Configuration["ExternalProviders:SendGrid:SenderEmail"];
+                options.SenderName = Configuration["ExternalProviders:SendGrid:SenderName"];
+            });
+
+            // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddAutoMapper(typeof(UsersProfile));
 
             // For Identity  
             services.AddIdentity<User, IdentityRole>()

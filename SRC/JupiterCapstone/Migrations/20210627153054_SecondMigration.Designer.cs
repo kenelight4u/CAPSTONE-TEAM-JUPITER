@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JupiterCapstone.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210625110235_Testing")]
-    partial class Testing
+    [Migration("20210627153054_SecondMigration")]
+    partial class SecondMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -72,18 +72,21 @@ namespace JupiterCapstone.Migrations
 
             modelBuilder.Entity("JupiterCapstone.Models.CartItem", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("ItemId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CartId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ProductId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
@@ -91,7 +94,7 @@ namespace JupiterCapstone.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ItemId");
 
                     b.HasIndex("CartId");
 
@@ -99,7 +102,7 @@ namespace JupiterCapstone.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CartItem");
+                    b.ToTable("ShoppingCartItems");
                 });
 
             modelBuilder.Entity("JupiterCapstone.Models.Category", b =>
@@ -326,6 +329,9 @@ namespace JupiterCapstone.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ResetPasswordToken")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -598,7 +604,7 @@ namespace JupiterCapstone.Migrations
 
             modelBuilder.Entity("JupiterCapstone.Models.CartItem", b =>
                 {
-                    b.HasOne("JupiterCapstone.Models.Cart", "Cart")
+                    b.HasOne("JupiterCapstone.Models.Cart", null)
                         .WithMany("CartItems")
                         .HasForeignKey("CartId");
 

@@ -1,4 +1,5 @@
-﻿using JupiterCapstone.Models;
+﻿using JupiterCapstone.DTO;
+using JupiterCapstone.Models;
 using JupiterCapstone.Services.GoogleServices.IGoogleService;
 using JupiterCapstone.Services.IService;
 using Microsoft.AspNetCore.Identity;
@@ -18,30 +19,30 @@ namespace JupiterCapstone.Services.GoogleServices
             _userManager = userManager;           
         }
 
-        public async Task<User> GetOrCreateExternalLoginUser(string provider, string key, string email, string firstName, string lastName)
+        public async Task<User> GetOrCreateExternalLoginUser(GoogleLoginRequest googleModel)
         {
             // Login already linked to a user
-            var user = await _userManager.FindByLoginAsync(provider, key);
+            var user = await _userManager.FindByLoginAsync(googleModel.Provider, googleModel.Key);
             if (user != null)
                 return user;
 
-            user = await _userManager.FindByEmailAsync(email);
+            user = await _userManager.FindByEmailAsync(googleModel.Email);
             if (user == null)
             {
                 // No user exists with this email address, we create a new one
                 user = new User
                 {
-                    Email = email,
-                    UserName = email,
-                    FirstName = firstName,
-                    LastName = lastName
+                    Email = googleModel.Email,
+                    UserName = googleModel.Email,
+                    FirstName = googleModel.FirstName,
+                    LastName = googleModel.LastName
                 };
 
                 await _userManager.CreateAsync(user);
             }
 
             // Link the user to this login
-            var info = new UserLoginInfo(provider, key, provider.ToUpperInvariant());
+            var info = new UserLoginInfo(googleModel.Provider, googleModel.Key, googleModel.Provider.ToUpperInvariant());
             var result = await _userManager.AddLoginAsync(user, info);
             if (result.Succeeded)
                 return user;

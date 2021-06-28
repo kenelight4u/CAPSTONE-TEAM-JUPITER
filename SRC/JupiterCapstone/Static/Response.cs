@@ -13,6 +13,7 @@ namespace JupiterCapstone.Static
         public string Message { get; set; }
     }
 
+
     public class ResponseModel<T>
     {
         public ResponseModel()
