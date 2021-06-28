@@ -16,40 +16,38 @@ namespace JupiterCapstone.Services
     
     public class PaymentAccess : IPayment
     {
-        private ApplicationDbContext _context;
-        public PaymentAccess()
+        private readonly ApplicationDbContext _context;
+        public PaymentAccess(ApplicationDbContext context)
         {
-            _context = new ApplicationDbContext();
+            _context = context;
         }
         
         public bool AddPayment(PaymentIM model)
         {
             try
             {
-                using (TransactionScope ts = new TransactionScope())
+                using TransactionScope ts = new TransactionScope();
+                var _model = new Payment
                 {
-                    var _model = new Payment
-                    {
-                        Id = model.Id,
-                        PaymentDateTime = model.PaymentDateTime,
-                        TransactionId = model.TransactionId,
-                        PaymentStatus = model.PaymentStatus,
-                        UserId = model.UserId,
+                    Id = model.Id,
+                    PaymentDateTime = model.PaymentDateTime,
+                    TransactionId = model.TransactionId,
+                    PaymentStatus = model.PaymentStatus,
+                    UserId = model.UserId,
                     //    ProductId = model.ProductId,
-                        Amount = model.Amount,
-                    };
-                    _context.Payments.Add(_model);
+                    Amount = model.Amount,
+                };
+                _context.Payments.Add(_model);
 
-                    int bit = _context.SaveChanges();
-                    ts.Complete();
-                    if (bit > 0)
-                    {
-                        return true;
-                    }
-                    return false;
+                int bit = _context.SaveChanges();
+                ts.Complete();
+                if (bit > 0)
+                {
+                    return true;
                 }
+                return false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -59,19 +57,17 @@ namespace JupiterCapstone.Services
         {
             try
             {
-                using (TransactionScope ts = new TransactionScope())
+                using TransactionScope ts = new TransactionScope();
+                var payment = _context.Payments.Where(s => s.Id == paymentId).FirstOrDefault();
+                if (payment == null)
                 {
-                    var payment = _context.Payments.Where(s => s.Id == paymentId).FirstOrDefault();
-                    if (payment == null)
-                    {
-                        return false;
-                    }
-                    _context.Payments.Remove(payment);
-
-                    _context.SaveChanges();
-                    ts.Complete();
-                    return true;
+                    return false;
                 }
+                _context.Payments.Remove(payment);
+
+                _context.SaveChanges();
+                ts.Complete();
+                return true;
             }
             catch (Exception)
             {
@@ -108,33 +104,25 @@ namespace JupiterCapstone.Services
         {
             try
             {
-                using (TransactionScope ts = new TransactionScope())
+                using TransactionScope ts = new TransactionScope();
+                var payment = _context.Payments.Where(s => s.Id == model.Id).FirstOrDefault();
+                if (payment != null)
                 {
-                    var payment = _context.Payments.Where(s => s.Id == model.Id).FirstOrDefault();
-                    if (payment != null)
-                    {
-                        payment.PaymentDateTime = model.PaymentDateTime;
-                        payment.PaymentStatus = model.PaymentStatus;
-                        payment.TransactionId = model.TransactionId;
-                        payment.UserId = model.UserId;
-                        payment.Amount = model.Amount;
-                        payment.OrderId = model.OrderId;
-                    }
-                    _context.SaveChanges();
-                    ts.Complete();
-                    return true;
+                    payment.PaymentDateTime = model.PaymentDateTime;
+                    payment.PaymentStatus = model.PaymentStatus;
+                    payment.TransactionId = model.TransactionId;
+                    payment.UserId = model.UserId;
+                    payment.Amount = model.Amount;
+                    payment.OrderId = model.OrderId;
                 }
+                _context.SaveChanges();
+                ts.Complete();
+                return true;
             }
             catch (Exception)
             {
                 throw;
             }
-        }
-
-
-        public void PayNow()
-        {
-            throw new NotImplementedException();
         }
     }
 }
