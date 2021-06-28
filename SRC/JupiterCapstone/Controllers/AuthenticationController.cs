@@ -66,9 +66,7 @@ namespace JupiterCapstone.Controllers
             {
                 UserName = model.Email,
                 Email = model.Email,
-                PasswordHash = model.Password,
-                
-                //SecurityStamp = Guid.NewGuid().ToString(),
+                PasswordHash = new PasswordHasher<object>().HashPassword(null, model.Password),
                 FirstName = model.FirstName,
                 LastName = model.LastName
             };
@@ -91,7 +89,7 @@ namespace JupiterCapstone.Controllers
             {
                 UserName = model.Email,
                 Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
+                PasswordHash = new PasswordHasher<object>().HashPassword(null, model.Password),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
             };

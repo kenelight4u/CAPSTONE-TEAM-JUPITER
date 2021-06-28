@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace JupiterCapstone.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,27 +42,12 @@ namespace JupiterCapstone.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(nullable: false),
                     LastName = table.Column<string>(nullable: false),
-                    Address = table.Column<string>(nullable: true),
-                    PostalCode = table.Column<string>(nullable: true),
-                    City = table.Column<string>(nullable: true),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     LastModifiedDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Carts",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    CartTotal = table.Column<double>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Carts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,21 +63,6 @@ namespace JupiterCapstone.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    TotalPrice = table.Column<decimal>(nullable: false),
-                    OrderDate = table.Column<DateTime>(nullable: false),
-                    Status = table.Column<string>(nullable: false),
-                    PaymentType = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -220,7 +190,7 @@ namespace JupiterCapstone.Migrations
                     CardHolderName = table.Column<string>(nullable: false),
                     CardNumber = table.Column<string>(nullable: false),
                     ExpiryDate = table.Column<DateTime>(nullable: false),
-                    CCV = table.Column<int>(maxLength: 3, nullable: false),
+                    CVV = table.Column<int>(maxLength: 3, nullable: false),
                     UserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
@@ -232,6 +202,28 @@ namespace JupiterCapstone.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    OrderDate = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<string>(nullable: false),
+                    PaymentType = table.Column<string>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -252,6 +244,29 @@ namespace JupiterCapstone.Migrations
                     table.PrimaryKey("PK_RefreshToken", x => x.RefreshTokenId);
                     table.ForeignKey(
                         name: "FK_RefreshToken_UsersMaster",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsersAddresses",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Address = table.Column<string>(nullable: true),
+                    PostalCode = table.Column<string>(nullable: true),
+                    City = table.Column<string>(nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsersAddresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UsersAddresses_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -281,11 +296,30 @@ namespace JupiterCapstone.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Cart",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    CartTotal = table.Column<double>(nullable: false),
+                    OrderId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cart", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Cart_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    Amount = table.Column<decimal>(nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TransactionId = table.Column<string>(nullable: false),
                     PaymentDateTime = table.Column<DateTime>(nullable: false),
                     PaymentStatus = table.Column<string>(nullable: false),
@@ -317,10 +351,11 @@ namespace JupiterCapstone.Migrations
                     ProductName = table.Column<string>(maxLength: 32, nullable: false),
                     Description = table.Column<string>(maxLength: 256, nullable: false),
                     Quantity = table.Column<double>(nullable: false),
-                    Price = table.Column<decimal>(nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     SupplierName = table.Column<string>(maxLength: 56, nullable: false),
-                    Image = table.Column<byte>(nullable: false),
+                    ImageUrl = table.Column<string>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
+                    Status = table.Column<string>(nullable: false),
                     CreatedDateTime = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: false),
                     SubCategoryId = table.Column<string>(nullable: true)
@@ -337,40 +372,33 @@ namespace JupiterCapstone.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CartItems",
+                name: "CartItem",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
                     ProductId = table.Column<string>(nullable: false),
                     Quantity = table.Column<double>(nullable: false),
-                    Total = table.Column<decimal>(nullable: false),
-                    OrderId = table.Column<string>(nullable: true),
+                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     UserId = table.Column<string>(nullable: true),
                     CartId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartItems", x => x.Id);
+                    table.PrimaryKey("PK_CartItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CartItems_Carts_CartId",
+                        name: "FK_CartItem_Cart_CartId",
                         column: x => x.CartId,
-                        principalTable: "Carts",
+                        principalTable: "Cart",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CartItems_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_CartItems_Products_ProductId",
+                        name: "FK_CartItem_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CartItems_AspNetUsers_UserId",
+                        name: "FK_CartItem_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -378,7 +406,7 @@ namespace JupiterCapstone.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "WishListItems",
+                name: "WishListItem",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
@@ -388,21 +416,21 @@ namespace JupiterCapstone.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WishListItems", x => x.Id);
+                    table.PrimaryKey("PK_WishListItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WishListItems_Products_ProductId",
+                        name: "FK_WishListItem_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_WishListItems_AspNetUsers_UserId",
+                        name: "FK_WishListItem_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_WishListItems_WishLists_WishListId",
+                        name: "FK_WishListItem_WishLists_WishListId",
                         column: x => x.WishListId,
                         principalTable: "WishLists",
                         principalColumn: "Id",
@@ -454,23 +482,28 @@ namespace JupiterCapstone.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItems_CartId",
-                table: "CartItems",
-                column: "CartId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CartItems_OrderId",
-                table: "CartItems",
+                name: "IX_Cart_OrderId",
+                table: "Cart",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItems_ProductId",
-                table: "CartItems",
+                name: "IX_CartItem_CartId",
+                table: "CartItem",
+                column: "CartId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartItem_ProductId",
+                table: "CartItem",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItems_UserId",
-                table: "CartItems",
+                name: "IX_CartItem_UserId",
+                table: "CartItem",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserId",
+                table: "Orders",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -499,18 +532,23 @@ namespace JupiterCapstone.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WishListItems_ProductId",
-                table: "WishListItems",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WishListItems_UserId",
-                table: "WishListItems",
+                name: "IX_UsersAddresses_UserId",
+                table: "UsersAddresses",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WishListItems_WishListId",
-                table: "WishListItems",
+                name: "IX_WishListItem_ProductId",
+                table: "WishListItem",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WishListItem_UserId",
+                table: "WishListItem",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WishListItem_WishListId",
+                table: "WishListItem",
                 column: "WishListId");
         }
 
@@ -535,7 +573,7 @@ namespace JupiterCapstone.Migrations
                 name: "CardDetails");
 
             migrationBuilder.DropTable(
-                name: "CartItems");
+                name: "CartItem");
 
             migrationBuilder.DropTable(
                 name: "Payments");
@@ -544,28 +582,31 @@ namespace JupiterCapstone.Migrations
                 name: "RefreshToken");
 
             migrationBuilder.DropTable(
-                name: "WishListItems");
+                name: "UsersAddresses");
+
+            migrationBuilder.DropTable(
+                name: "WishListItem");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Carts");
-
-            migrationBuilder.DropTable(
-                name: "Orders");
+                name: "Cart");
 
             migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "WishLists");
 
             migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
                 name: "SubCategories");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Categories");

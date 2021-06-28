@@ -16,5 +16,7 @@ namespace JupiterCapstone.Services.IService
         void DeleteProduct(List<string>productToDelete);
         IEnumerable<ViewProductDto> GetProductsByName(List<string>products);
         void SaveChanges();
+
+        string GetProductPriceById(string productId);
     }
 }

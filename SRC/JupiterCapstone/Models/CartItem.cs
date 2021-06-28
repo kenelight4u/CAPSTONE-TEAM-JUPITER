@@ -10,18 +10,26 @@ namespace JupiterCapstone.Models
     public class CartItem 
     {
         [Key]
-        public string Id { get; set; }
+        public string ItemId { get; set; }
+
         public virtual Product Product { get; set; }
+
         [Required]
         public string ProductId { get; set; }
+
         [Required]
-        public double Quantity { get; set; }
-        [Required]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Total { get; set; }
+        public int Quantity { get; set; }
+
+        ////not yet used
+        //[Required]
+        //[Column(TypeName = "decimal(18,2)")]
+        //public decimal Total { get; set; }
+
         public virtual User User { get; set; }
         public string UserId { get; set; }
-        public virtual Cart Cart  { get; set; }
-        public string CartId { get; set; } 
+
+        public DateTime DateCreated { get; set; }
+        // public virtual Cart Cart  { get; set; }
+        //public string CartId { get; set; } 
     }
 }

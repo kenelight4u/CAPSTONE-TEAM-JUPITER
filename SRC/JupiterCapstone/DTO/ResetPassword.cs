@@ -8,8 +8,7 @@ namespace JupiterCapstone.DTO
 {
     public class ResetPassword
     {
-        public string Message { get; set; }
-
+        
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
 

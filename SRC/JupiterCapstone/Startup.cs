@@ -59,10 +59,10 @@ namespace JupiterCapstone
             services.AddScoped<ICategory, CategoryAccess>();
             services.AddScoped<ISubCategory, SubCategoryAccess>();
             services.AddScoped<IProduct, ProductAccess>();
-            services.AddScoped<ICart, CartAccess>();
+            //services.AddScoped<ICart, CartAccess>();
             services.AddScoped<IOrder, OrderAccess>();
             services.AddScoped<IPayment, PaymentAccess>();
-            services.AddScoped<IWishList, WishListAccess>();
+           // services.AddScoped<IWishList, WishListActions>();
 
             services.AddControllers().AddNewtonsoftJson(s =>
             {
