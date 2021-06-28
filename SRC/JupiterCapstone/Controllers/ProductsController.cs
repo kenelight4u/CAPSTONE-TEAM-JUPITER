@@ -19,53 +19,92 @@ namespace JupiterCapstone.Controllers
             _repository = repository;
         }
 
-       [HttpGet]
-       public IActionResult GetAllProducts()
-       {
-            var allProducts = _repository.GetAllProducts().ToList();
-            if (allProducts.Count==0)
+        [HttpGet]
+        [Route("subcategoryid")]
+        public async Task<IActionResult> GetProductsBySubCategoryId([FromQuery] string subcategoryId)
+        {
+            if (subcategoryId == null)
+            {
+                return BadRequest();
+            }
+            var products = await _repository.GetProductsBySubCategoryIdAsync(subcategoryId);
+            if (products == null)
             {
                 return NotFound();
             }
-           
+            return Ok(products);
+        }
+        /*[HttpGet]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            var allProducts = await _repository.GetAllProductsAsync();
+            if (allProducts == null)
+            {
+                return NotFound();
+            }
+
             return Ok(allProducts);
-       }
+        }*/
 
         [HttpPost]
         [Route("add")]
-        public IActionResult AddProducts([FromBody] List<AddProductDto> addProduct)
+        public async Task<IActionResult> AddProducts([FromBody] List<AddProductDto> addProduct)
         {
-            _repository.AddProduct(addProduct);
+            var reponse= await _repository.AddProductAsync(addProduct);
+            if (!reponse)
+            {
+                return BadRequest();
+
+            }
             return NoContent();
         }
 
         [HttpPut]
         [Route("update")]
-        public IActionResult DeleteProducts([FromBody] List<UpdateProductDto> productToUpdate)
+        public async Task<IActionResult> UpdateProducts([FromBody] List<UpdateProductDto> productToUpdate)
         {
-            _repository.UpdateProduct(productToUpdate);
+            var response=await _repository.UpdateProductAsync(productToUpdate);
+            if (!response)
+            {
+                return BadRequest();
+            }
             return NoContent();
         }
 
 
         [HttpDelete]
         [Route("delete")]
-        public IActionResult DeleteProducts([FromBody]List<string>productsToDelete)
+        public async Task<IActionResult> DeleteProducts([FromBody]List<string>productsToDelete)
         {
-            _repository.DeleteProduct(productsToDelete);
+            if (productsToDelete.Count==0) 
+            {
+                return BadRequest();
+            }
+            await _repository.DeleteProductAsync(productsToDelete);
             return NoContent();
         }
 
         [HttpPost]
         [Route("search")]
-        public IActionResult GetProductsByName([FromBody] List<string> productsName)
+        public async Task <IActionResult> GetProductsByName([FromBody] List<string> productsName)
         {
-           var products= _repository.GetProductsByName(productsName);
-            if (products==null)
+            if (productsName.Count==0)
             {
-                return NotFound();
+                return BadRequest();
             }
-            return Ok(products);
+            else
+            {
+                var products = await _repository.GetProductsByNameAsync(productsName);
+                if (products == null)
+                {
+                    return NotFound();
+                }
+                return Ok(products);
+
+            }
+          
         }
+       
     }
+    
 }

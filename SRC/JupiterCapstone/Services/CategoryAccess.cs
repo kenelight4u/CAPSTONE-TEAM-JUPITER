@@ -3,6 +3,7 @@ using JupiterCapstone.Dtos.Admin;
 using JupiterCapstone.Dtos.User;
 using JupiterCapstone.Models;
 using JupiterCapstone.Services.IService;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +21,11 @@ namespace JupiterCapstone.Services
 
         }
 
-        public void AddCategory(List<AddCategoryDto> categoriesToAdd)
+        public async Task<bool> AddCategoryAsync(List<AddCategoryDto> categoriesToAdd)
         {
-            if (categoriesToAdd==null)
+            if (categoriesToAdd.Count==0)
             {
-                throw new ArgumentNullException(nameof(categoriesToAdd));
-
+                return false;
             }
             else
             {
@@ -37,60 +37,75 @@ namespace JupiterCapstone.Services
                         CategoryName = category.CategoryName
 
                     };
-                    _context.Categories.Add(categoryDb);
-                    SaveChanges();
-
+                   await _context.Categories.AddAsync(categoryDb);
+                    await SaveChangesAsync();
 
                 }
+                return true;
             }
         }
 
-        public void DeleteCategory(List<string> categoriesToDelete)
+
+        public async Task DeleteCategoryAsync(List<string> categoriesToDelete)
         {
-            var allCategories = _context.Categories.ToList();
+            var allCategories = await _context.Categories.Include(e=>e.SubCategories).ToListAsync();
 
             foreach (var category in categoriesToDelete)
             {
-                var dbCategory = allCategories.FirstOrDefault(e => e.Id == category);
-                _context.Categories.Remove(dbCategory);
-
-
+                var dbCategory = allCategories.FirstOrDefault(e => e.Id == category);                  
+                  _context.Categories.Remove(dbCategory);
+                
             }
-            SaveChanges();
+            await SaveChangesAsync();
+
+
         }
 
-        public IEnumerable<ViewCategoryDto> GetAllCategories()
+        public async Task<IEnumerable<ViewCategoryDto>> GetAllCategoriesAsync()
         {
-            var allCategories = _context.Categories.ToList();
+            var allCategories = await _context.Categories.ToListAsync();
             List<ViewCategoryDto> viewCategories = new List<ViewCategoryDto>();
             foreach (var category in allCategories)
             {
                 viewCategories.Add(new ViewCategoryDto() { 
                     CategoryId=category.Id,
-                    CategoryName=category.CategoryName
-        
+                    CategoryName=category.CategoryName       
                 
-                });;
+                });
 
             }
             return viewCategories;
         }
 
-        public void SaveChanges()
-        {
-            _context.SaveChanges();
-        }
 
-        public void UpdateCategory(List<UpdateCategoryDto> categoriesToUpdate)
+        public async Task<bool> UpdateCategoryAsync(List<UpdateCategoryDto> categoriesToUpdate)
         {
-            var oldCategory = _context.Categories.ToList();
-            foreach (var category in categoriesToUpdate)
+            if (categoriesToUpdate.Count==0)
             {
-                var categoryDb = oldCategory.FirstOrDefault(e => e.Id ==category.CategoryId);
-                categoryDb.CategoryName = category.CategoryName;
+                return false;
 
             }
-            SaveChanges();
+            else
+            {
+                var oldCategory = await _context.Categories.ToListAsync();
+                foreach (var category in categoriesToUpdate)
+                {
+                    var categoryDb = oldCategory.FirstOrDefault(e => e.Id == category.CategoryId);
+                    categoryDb.CategoryName = category.CategoryName;
+
+                }
+                await SaveChangesAsync();
+                return true;
+            }
+            
+            
         }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+
     }
 }

@@ -10,12 +10,13 @@ namespace JupiterCapstone.Services.IService
 {
     public interface IProduct
     {
-        IEnumerable<ViewProductDto> GetAllProducts();//for a user
-        void AddProduct(List<AddProductDto> productsDto); 
-        void  UpdateProduct(List<UpdateProductDto> updateProductsDto);  
-        void DeleteProduct(List<string>productToDelete);
-        IEnumerable<ViewProductDto> GetProductsByName(List<string>products);
-        void SaveChanges();
+        Task<IEnumerable<ViewProductDto>> GetAllProductsAsync();//for a user
+        Task<bool> AddProductAsync(List<AddProductDto> productsDto); 
+        Task<bool> UpdateProductAsync(List<UpdateProductDto> updateProductsDto);  
+        Task DeleteProductAsync(List<string>productToDelete);
+        Task<IEnumerable<ViewProductDto>> GetProductsByNameAsync(List<string>products);
+        Task<IEnumerable<ViewProductDto>> GetProductsBySubCategoryIdAsync(string subCategoryId);
+       
 
     }
 }

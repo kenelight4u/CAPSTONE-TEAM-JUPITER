@@ -3,6 +3,7 @@ using JupiterCapstone.Dtos.Admin;
 using JupiterCapstone.Dtos.User;
 using JupiterCapstone.Models;
 using JupiterCapstone.Services.IService;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,48 +20,50 @@ namespace JupiterCapstone.Services
             _context = context;
 
         }
-
-        public void AddSubCategory(List<AddSubCategoryDto> addSubcategories)
+     
+        public async Task<bool> AddSubCategoryAsync(List<AddSubCategoryDto> subCategories)
         {
-            if (addSubcategories == null)
+            if (subCategories.Count == 0)
             {
-                throw new ArgumentNullException(nameof(addSubcategories));
-
+                return false;
+                
             }
             else
             {
-                foreach (var subCategory in addSubcategories)
+                foreach (var subCategoriesToAdd in subCategories)
                 {
+
                     SubCategory subCategoryDb = new SubCategory()
                     {
                         Id = Guid.NewGuid().ToString(),
-                        SubCategoryName = subCategory.SubCategoryName,
-
+                        SubCategoryName = subCategoriesToAdd.SubCategoryName,
+                        CategoryId=subCategoriesToAdd.CategoryId
                     };
-                    _context.SubCategories.Add(subCategoryDb);
-                    SaveChanges();
+                    await _context.SubCategories.AddAsync(subCategoryDb);
 
                 }
+                await SaveChangesAsync();
+                return true;
             }
         }
 
-        public void DeleteSubCategory(List<string> deleteSubcategories)
+        public async Task DeleteSubCategoryAsync(List<string> deleteSubcategories)
         {
-            var allsubCategories = _context.SubCategories.ToList();
+            var allSubCategories = await _context.SubCategories.Include(e => e.Products).ToListAsync();
 
             foreach (var subcategory in deleteSubcategories)
             {
-                var dbSubCategory = allsubCategories.FirstOrDefault(e => e.Id == subcategory);
+                var dbSubCategory = allSubCategories.FirstOrDefault(e => e.Id == subcategory);
                 _context.SubCategories.Remove(dbSubCategory);
 
 
             }
-            SaveChanges();
+            await SaveChangesAsync();
         }
 
-        public IEnumerable<ViewSubCategoryDto> GetAllSubCategories()
+       /* public async Task<IEnumerable<ViewSubCategoryDto>> GetAllSubCategoriesAsync()
         {
-            var allSubCategories = _context.SubCategories.ToList();
+            var allSubCategories = await _context.SubCategories.ToListAsync();
             List<ViewSubCategoryDto> viewsubCategory = new List<ViewSubCategoryDto>();
 
             foreach (var subCategory in allSubCategories)
@@ -68,29 +71,69 @@ namespace JupiterCapstone.Services
                 viewsubCategory.Add(new ViewSubCategoryDto()
                 {
                     SubCategoryId = subCategory.Id,
-                    SubCategoryName = subCategory.SubCategoryName
+                    SubCategoryName = subCategory.SubCategoryName,   
 
                 });
             }
             return viewsubCategory;
+        }*/
+
+
+        public async Task<bool> UpdateSubCategoryAsync(List<UpdateSubCategoryDto> updateSubcategories)
+        {
+            if (updateSubcategories.Count==0)
+            {
+                return false;
+            }
+            else
+            {
+                var oldCategory = await _context.SubCategories.ToListAsync();
+                foreach (var subcategory in updateSubcategories)
+                {
+                    var categoryDb = oldCategory.FirstOrDefault(e => e.Id == subcategory.SubCategoryId);
+                    categoryDb.SubCategoryName = subcategory.SubCategoryName;
+
+                }
+                await SaveChangesAsync();
+                return true;
+            }
+         
         }
 
-
-        public void UpdateSubCategory(List<UpdateSubCategoryDto> updateSubcategories)
+        public async Task SaveChangesAsync()
         {
-            var oldCategory = _context.SubCategories.ToList();
-            foreach (var subcategory in updateSubcategories)
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<ViewSubCategoryDto>> GetSubCategoriesByCategoryIdAsync(string categoryId)
+        {
+            var subCategories = await _context.SubCategories.Where(e=>e.CategoryId==categoryId).ToListAsync();
+            if (subCategories.Count==0)
             {
-                var categoryDb = oldCategory.FirstOrDefault(e => e.Id == subcategory.SubCategoryId);
-                categoryDb.SubCategoryName = subcategory.SubCategoryName;
+                return null;
+            }
+            else
+            {
+                List<ViewSubCategoryDto> foundCategories = new List<ViewSubCategoryDto>();
+                foreach (var subcategories in subCategories)
+                {
+                    foundCategories.Add(new ViewSubCategoryDto
+                    {
+                        SubCategoryId = subcategories.Id,
+                        SubCategoryName = subcategories.SubCategoryName
+
+                    });
+
+                }
+                return foundCategories;
 
             }
-            SaveChanges();
+           
         }
 
-        public void SaveChanges()
-        {
-            _context.SaveChanges();
-        }
+
+
+        
     }
+
 }

@@ -19,10 +19,10 @@ namespace JupiterCapstone.Controllers
        }
 
         [HttpGet]
-        public IActionResult GetAllCategories()
+        public async Task<IActionResult> GetAllCategories()
         {
-            var categories = _repository.GetAllCategories().ToList();
-            if (categories.Count==0)
+            var categories = await _repository.GetAllCategoriesAsync();
+            if (categories==null)
             {
                 return NotFound();
             }
@@ -32,27 +32,40 @@ namespace JupiterCapstone.Controllers
 
         [HttpPost]
         [Route("add")]
-        public IActionResult AddCategories([FromBody] List<AddCategoryDto> addCategories)
+        public async Task<IActionResult> AddCategories([FromBody] List<AddCategoryDto> addCategories)
         {
-            _repository.AddCategory(addCategories);
+            var response=await _repository.AddCategoryAsync(addCategories);
+            if (!response)
+            {
+                return BadRequest();
+            }
             return NoContent();
 
         }
         [HttpPut]
         [Route("update")]
-        public IActionResult UpdateCategories([FromBody] List<UpdateCategoryDto> updateCategories)
+        public async Task<IActionResult> UpdateCategories([FromBody] List<UpdateCategoryDto> updateCategories)
         {
-            _repository.UpdateCategory(updateCategories);
+            var response = await _repository.UpdateCategoryAsync(updateCategories);
+            if (!response)
+            {
+                return BadRequest();
+            } 
             return NoContent();
 
         }
         [HttpDelete]
         [Route("delete")]
-        public IActionResult DeleteCategories(List<string> deleteCategories)
+        public async Task<IActionResult> DeleteCategories(List<string> deleteCategories)
         {
-            _repository.DeleteCategory(deleteCategories);
+            if (deleteCategories.Count==0)
+            {
+                return BadRequest();
+            }
+            await _repository.DeleteCategoryAsync(deleteCategories);
             return NoContent();
         }
+
     }
 
 }

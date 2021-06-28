@@ -9,6 +9,7 @@ namespace JupiterCapstone.Dtos.User
     {
         public string SubCategoryId { get; set; }
         public string SubCategoryName { get; set; }
+        
 
     }
 }
