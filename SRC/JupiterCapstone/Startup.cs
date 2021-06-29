@@ -21,7 +21,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MyApp;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
@@ -70,14 +69,8 @@ namespace JupiterCapstone
             });
 
             //registering Send Grid 
-            services.AddTransient<IEmailSender, SendGridEmailSender>();
-            services.Configure<SendGridEmailSenderOptions>(options =>
-            {
-                options.ApiKey = Configuration["ExternalProviders:SendGrid:ApiKey"];
-                options.SenderEmail = Configuration["ExternalProviders:SendGrid:SenderEmail"];
-                options.SenderName = Configuration["ExternalProviders:SendGrid:SenderName"];
-            });
-
+            services.AddTransient<IMailService, SendGridMailService>();
+           
             // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddAutoMapper(typeof(UsersProfile));
 
