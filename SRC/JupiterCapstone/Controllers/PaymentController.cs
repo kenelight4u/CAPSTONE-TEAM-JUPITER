@@ -82,7 +82,7 @@ namespace JupiterCapstone.Controllers
                 var payment = await Task.Run(() => _payment.GetPaymentById(paymentId));
                 return Ok(payment);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return NotFound("The Payment requested for could not be found.");
             }

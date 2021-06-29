@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using JupiterCapstone.DTO;
 using JupiterCapstone.Models;
+using JupiterCapstone.SendGrid;
 using JupiterCapstone.Services.IService;
 using JupiterCapstone.Static;
 using Microsoft.AspNetCore.Http;
@@ -26,32 +27,35 @@ namespace JupiterCapstone.Controllers
 
         private readonly UserManager<User> _userManager;
 
-        private readonly IEmailSender _emailSender;
+        private readonly IMailService _mailService;
 
-        public UserController(IUserService service, IMapper mapper, UserManager<User> userManager, IEmailSender emailSender)
+        public UserController(IUserService service, IMapper mapper, UserManager<User> userManager, IMailService mailService)
         {
             _service = service;
             _mapper = mapper;
             _userManager = userManager;
-            _emailSender = emailSender;
+            _mailService = mailService;
         }
 
         [HttpPost]
         [Route("ForgotPasswordRequest")]
         public async Task<IActionResult> ForgotPasswordAsync(EmailForToken email)
         {
+            
             var random = new Random();
             string message = random.Next(1000, 9999).ToString();
+            string content = $"<p>Please use the following security code for the Aduaba account : </p>" + message;
 
-            var subject = "RESET CODE";
+            var subject = "Security Code";
 
             var user = await _userManager.FindByEmailAsync(email.Email);
 
             if (user == null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Email Not Found!" });
 
-            await _emailSender.SendEmailAsync(email.Email, subject, message);
+            await _mailService.SendEmailAsync(email.Email, subject, content);
 
+            
             //I saved the token sent so to validate it
             user.ResetPasswordToken = message;
             await _userManager.UpdateAsync(user);
