@@ -16,8 +16,10 @@ using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace JupiterCapstone.Controllers
 {
-    [Route("api/[controller]")]
+    //[Route("api/[controller]")]
+    
     [ApiController]
+
     public class AuthenticationController : ControllerBase
     {
         private readonly IIdentityService _identityService;
@@ -36,16 +38,18 @@ namespace JupiterCapstone.Controllers
             _googleIdentity = googleIdentity;
         }
 
-        [Route("login")]
+        
         [HttpPost]
+        [Route("/login")]
         public async Task<IActionResult> LoginAsync([FromBody] LogIn login)
         {
             var result = await _identityService.LoginAsync(login);
             return Ok(result);
         }
 
-        [Route("refresh")]
+       
         [HttpPost]
+        [Route("/refresh")]
         public async Task<IActionResult> Refresh([FromBody] TokenModel request)
         {
             var result = await _identityService.RefreshTokenAsync(request);
@@ -54,7 +58,7 @@ namespace JupiterCapstone.Controllers
 
         //Remember to shorten the code to a service class
         [HttpPost]
-        [Route("register")]
+        [Route("/register")]
         public async Task<IActionResult> RegisterAsync([FromBody] Register model)
         {
             var emailExists = await _userManager.FindByEmailAsync(model.Email);
@@ -78,7 +82,7 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpPost]
-        [Route("register-admin")]
+        [Route("/register-admin")]
         public async Task<IActionResult> RegisterAdminAsync([FromBody] Register model)
         {
             var emailExists = await _userManager.FindByEmailAsync(model.Email);
@@ -114,7 +118,7 @@ namespace JupiterCapstone.Controllers
 
         //Not tested yet...
         [HttpPost]
-        [Route("google-signIn")]
+        [Route("/google-signIn")]
         [ProducesDefaultResponseType]
         public async Task<IActionResult> GoogleLogin(GoogleLoginRequest request)
         {

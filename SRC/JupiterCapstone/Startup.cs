@@ -98,6 +98,14 @@ namespace JupiterCapstone
                 RequireExpirationTime = false,
                 ValidateLifetime = true
             };
+
+            /*var applicationSettings = Configuration.GetSection("AddSettings");
+            services.Configure<ApplicationSettings>(applicationSettings);
+
+            var appSettingsSecretKey = applicationSettings.Get<ApplicationSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettingsSecretKey.JWT_Secret);*/
+
+
             services.AddSingleton(tokenValidationParameters);
             services.AddAuthentication(x =>
             {
@@ -115,11 +123,22 @@ namespace JupiterCapstone
             });
 
             services.AddControllers();
+            services.AddMvc();
+            services.AddSwaggerGen();
 
-            services.AddSwaggerGen(c =>
+            /* services.AddSwaggerGen(c =>
+             {
+                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ADUABA API", Version = "v1" });
+
+             });*/
+
+            services.AddSwaggerGen(config =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ADUABA API", Version = "v1" });
-
+                config.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Aduaba",
+                    Version = "v1"
+                });
             });
         }
 
@@ -133,9 +152,11 @@ namespace JupiterCapstone
 
             app.UseSwagger();
 
+
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ADUABA API V1");
+                c.RoutePrefix = string.Empty;
             });
 
             app.UseHttpsRedirection();
