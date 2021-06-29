@@ -5,7 +5,7 @@ on:
     - Dev
 env:
   AZURE_WEBAPP_NAME: AduabaTeamJupiterAPI
-  DOTNET_CORE_VERSION: 3.1.x
+  DOTNET_CORE_VERSION: 5.0.x
   WORKING_DIRECTORY: .
   CONFIGURATION: Release
   AZURE_WEBAPP_PACKAGE_PATH: ./publish
@@ -15,7 +15,7 @@ env:
   AZURE_APIM_API_ID: aduabateamjupiterapi
   AZURE_APIM_APPSERVICEURL: https://aduabateamjupiterapi.azurewebsites.net
   SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION: 5.6.3
-  SWASHBUCKLE_DOTNET_CORE_VERSION: 3.1.x
+  SWASHBUCKLE_DOTNET_CORE_VERSION: 6.1.4.x
   API_IMPORT_SPECIFICATION_PATH: ./publish/swagger.json
   API_IMPORT_DLL: ./publish/JupiterCapstone.dll
   API_IMPORT_VERSION: v1
