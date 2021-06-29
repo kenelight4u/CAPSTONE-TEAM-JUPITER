@@ -381,20 +381,13 @@ namespace JupiterCapstone.Migrations
                     b.ToTable("UsersAddresses");
                 });
 
-            modelBuilder.Entity("JupiterCapstone.Models.WishList", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("WishLists");
-                });
-
             modelBuilder.Entity("JupiterCapstone.Models.WishListItem", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("ItemId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ProductId")
                         .HasColumnType("nvarchar(450)");
@@ -402,18 +395,13 @@ namespace JupiterCapstone.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("WishListId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
+                    b.HasKey("ItemId");
 
                     b.HasIndex("ProductId");
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("WishListId");
-
-                    b.ToTable("WishListItem");
+                    b.ToTable("WishListItems");
                 });
 
             modelBuilder.Entity("JupiterCapstone.Services.AuthorizationServices.RefreshToken", b =>
@@ -662,10 +650,6 @@ namespace JupiterCapstone.Migrations
                     b.HasOne("JupiterCapstone.Models.User", "User")
                         .WithMany("WishListItems")
                         .HasForeignKey("UserId");
-
-                    b.HasOne("JupiterCapstone.Models.WishList", "WishList")
-                        .WithMany("WishListItems")
-                        .HasForeignKey("WishListId");
                 });
 
             modelBuilder.Entity("JupiterCapstone.Services.AuthorizationServices.RefreshToken", b =>
