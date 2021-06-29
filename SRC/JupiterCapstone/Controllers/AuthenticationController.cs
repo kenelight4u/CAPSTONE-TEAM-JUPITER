@@ -16,10 +16,10 @@ using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace JupiterCapstone.Controllers
 {
+
     //[Route("api/[controller]")]
     
     [ApiController]
-
     public class AuthenticationController : ControllerBase
     {
         private readonly IIdentityService _identityService;
@@ -37,7 +37,6 @@ namespace JupiterCapstone.Controllers
             _roleManager = roleManager;
             _googleIdentity = googleIdentity;
         }
-
         
         [HttpPost]
         [Route("/login")]
@@ -46,8 +45,7 @@ namespace JupiterCapstone.Controllers
             var result = await _identityService.LoginAsync(login);
             return Ok(result);
         }
-
-       
+        
         [HttpPost]
         [Route("/refresh")]
         public async Task<IActionResult> Refresh([FromBody] TokenModel request)
