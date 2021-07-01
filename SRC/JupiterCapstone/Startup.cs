@@ -51,17 +51,21 @@ namespace JupiterCapstone
             var appSettingsSection = Configuration.GetSection("TokenConfiguration");
             services.Configure<TokenConfiguration>(appSettingsSection);
 
+            // configure strongly typed settings objects sms
+            var appSmsSetting = Configuration.GetSection("SmsConfiguration");
+            services.Configure<SmsConfiguration>(appSmsSetting);
+
             services.AddScoped<IIdentityService, IdentityService>();
-          
+            services.AddScoped<IShippingAddressService, ShippingAddressService>();
             services.AddScoped<IGoogleIdentity, GoogleIdentity>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICategory, CategoryAccess>();
             services.AddScoped<ISubCategory, SubCategoryAccess>();
             services.AddScoped<IProduct, ProductAccess>();
-            //services.AddScoped<ICart, CartAccess>();
+            services.AddScoped<IShoppingCartActions, ShoppingCartActions>();
             services.AddScoped<IOrder, OrderAccess>();
             services.AddScoped<IPayment, PaymentAccess>();
-           // services.AddScoped<IWishList, WishListActions>();
+            services.AddScoped<IWishListActions, WishListActions>();
 
             services.AddControllers().AddNewtonsoftJson(s =>
             {
@@ -119,12 +123,6 @@ namespace JupiterCapstone
             services.AddMvc();
             services.AddSwaggerGen();
 
-            /* services.AddSwaggerGen(c =>
-             {
-                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ADUABA API", Version = "v1" });
-
-             });*/
-
             services.AddSwaggerGen(config =>
             {
                 config.SwaggerDoc("v1", new OpenApiInfo
@@ -149,7 +147,7 @@ namespace JupiterCapstone
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ADUABA API V1");
-                c.RoutePrefix = string.Empty;
+                //c.RoutePrefix = string.Empty;
             });
 
             app.UseHttpsRedirection();

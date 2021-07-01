@@ -1,4 +1,4 @@
-﻿using JupiterCapstone.Dtos.Admin;
+﻿using JupiterCapstone.DTO.Admin;
 using JupiterCapstone.Services.IService;
 using Microsoft.AspNetCore.Mvc;
 using System;

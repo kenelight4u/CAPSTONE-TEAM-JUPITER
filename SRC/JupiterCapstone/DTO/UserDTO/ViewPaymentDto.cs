@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JupiterCapstone.Dtos.User
+namespace JupiterCapstone.DTO.UserDTO
 {
     public class ViewPaymentDto
     {

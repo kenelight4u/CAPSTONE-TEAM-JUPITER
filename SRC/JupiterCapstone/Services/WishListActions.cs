@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Services
 {
-    public class WishListActions 
+    public class WishListActions : IWishListActions
     {
         private readonly ApplicationDbContext _context;
 
@@ -44,7 +44,7 @@ namespace JupiterCapstone.Services
         {
             return _context.WishListItems.Where(w => w.UserId == userId).ToList();
         }
-
+        
         public void RemoveItem(string removeUserID, string removeProductID)
         {
 

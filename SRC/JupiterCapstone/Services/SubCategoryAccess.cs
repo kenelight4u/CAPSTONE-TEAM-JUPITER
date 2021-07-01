@@ -1,6 +1,6 @@
 ﻿using JupiterCapstone.Data;
-using JupiterCapstone.Dtos.Admin;
-using JupiterCapstone.Dtos.User;
+using JupiterCapstone.DTO.Admin;
+using JupiterCapstone.DTO.UserDTO;
 using JupiterCapstone.Models;
 using JupiterCapstone.Services.IService;
 using Microsoft.EntityFrameworkCore;

@@ -17,6 +17,18 @@ namespace JupiterCapstone.Services.AuthorizationServices
 
         public TimeSpan TokenLifetime { get; set; }
     }
+
+    public class SmsConfiguration
+    {
+        public SmsSecretDetails SmsSecretDetails { get; set; }
+    }
+
+    public class SmsSecretDetails
+    {
+        public string AccountSID { get; set; }
+
+        public string AuthToken { get; set; }
+    }
 }
 
 

@@ -9,6 +9,6 @@ namespace JupiterCapstone.Services.GoogleServices.IGoogleService
 {
     public interface IGoogleIdentity
     {
-        Task<User> GetOrCreateExternalLoginUser(GoogleLoginRequest googleModel);
+        Task<User> GetOrCreateExternalLoginUser(string provider, string key, string email, string firstName, string lastName);
     }
 }

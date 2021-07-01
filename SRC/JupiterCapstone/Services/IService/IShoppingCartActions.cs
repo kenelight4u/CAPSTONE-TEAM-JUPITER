@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Services.IService
 {
-   public interface IWishList
+    public interface IShoppingCartActions
     {
-        void AddToWishList(List<WishList> wishList);
-        void RemoveWishList(List<WishList> wishList);
+        
     }
 }
