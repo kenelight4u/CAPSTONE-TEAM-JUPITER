@@ -1,5 +1,5 @@
-﻿using JupiterCapstone.Dtos.Admin;
-using JupiterCapstone.Dtos.User;
+﻿using JupiterCapstone.DTO.UserDTO;
+using JupiterCapstone.DTO.Admin;
 using JupiterCapstone.Models;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Services.IService
 {
-     public interface ISubCategory
+    public interface ISubCategory
     {
         //Task<IEnumerable<ViewSubCategoryDto>> GetAllSubCategoriesAsync();//for a user
         Task<bool> AddSubCategoryAsync(List<AddSubCategoryDto> addSubcategories);

@@ -1,6 +1,4 @@
 ﻿using JupiterCapstone.Data;
-using JupiterCapstone.Dtos.Admin;
-using JupiterCapstone.Dtos.User;
 using JupiterCapstone.Models;
 using JupiterCapstone.Services.IService;
 using System;
@@ -10,6 +8,8 @@ using System.Threading.Tasks;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.EntityFrameworkCore;
+using JupiterCapstone.DTO.UserDTO;
+using JupiterCapstone.DTO.Admin;
 
 namespace JupiterCapstone.Services
 {
@@ -181,7 +181,7 @@ namespace JupiterCapstone.Services
         }
         public async Task<IEnumerable<ViewProductDto>> GetProductsBySubCategoryIdAsync(string subCategoryId)
         {
-            var products = await _context.Products.Where(e => e.SubCategoryId == subCategoryId).ToListAsync();
+            var products = await _context.Products.Where(e => e.SubCategoryId == subCategoryId ).ToListAsync();
             if (products.Count == 0)
             {
                 return null;

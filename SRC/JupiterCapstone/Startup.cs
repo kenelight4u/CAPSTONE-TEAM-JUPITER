@@ -52,7 +52,6 @@ namespace JupiterCapstone
             services.Configure<TokenConfiguration>(appSettingsSection);
 
             services.AddScoped<IIdentityService, IdentityService>();
-          
             services.AddScoped<IGoogleIdentity, GoogleIdentity>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICategory, CategoryAccess>();
@@ -61,7 +60,7 @@ namespace JupiterCapstone
             //services.AddScoped<ICart, CartAccess>();
             services.AddScoped<IOrder, OrderAccess>();
             services.AddScoped<IPayment, PaymentAccess>();
-           // services.AddScoped<IWishList, WishListActions>();
+            services.AddScoped<IWishList, WishListActions>();
 
             services.AddControllers().AddNewtonsoftJson(s =>
             {
@@ -91,13 +90,6 @@ namespace JupiterCapstone
                 RequireExpirationTime = false,
                 ValidateLifetime = true
             };
-
-            /*var applicationSettings = Configuration.GetSection("AddSettings");
-            services.Configure<ApplicationSettings>(applicationSettings);
-
-            var appSettingsSecretKey = applicationSettings.Get<ApplicationSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettingsSecretKey.JWT_Secret);*/
-
 
             services.AddSingleton(tokenValidationParameters);
             services.AddAuthentication(x =>
@@ -149,7 +141,7 @@ namespace JupiterCapstone
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ADUABA API V1");
-                c.RoutePrefix = string.Empty;
+                //c.RoutePrefix = string.Empty;
             });
 
             app.UseHttpsRedirection();

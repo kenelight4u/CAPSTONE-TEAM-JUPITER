@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JupiterCapstone.Dtos.User
+namespace JupiterCapstone.DTO.UserDTO
 {
     public class ViewProductDto
     {
@@ -16,6 +16,6 @@ namespace JupiterCapstone.Dtos.User
         //public bool IsDeleted { get; set; }
         public string Status { get; set; }
         public string ImageUrl { get; set; }
-       
+
     }
 }
