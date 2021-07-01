@@ -11,7 +11,7 @@ namespace JupiterCapstone.Models
     {
         public Order()
         {
-            Carts = new HashSet<Cart>();
+            Carts = new HashSet<CartItem>();
         }
 
         [Key]
@@ -25,6 +25,6 @@ namespace JupiterCapstone.Models
         public string Status { get; set; }
         [Required] 
         public string PaymentType { get; set; }
-        public virtual IEnumerable<Cart> Carts { get; set; } 
+        public virtual IEnumerable<CartItem> Carts { get; set; } 
     }
 }

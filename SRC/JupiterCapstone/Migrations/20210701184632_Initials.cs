@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace JupiterCapstone.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Initials : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -245,11 +245,10 @@ namespace JupiterCapstone.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    Address = table.Column<string>(nullable: true),
-                    PostalCode = table.Column<string>(nullable: true),
-                    City = table.Column<string>(nullable: true),
+                    Address = table.Column<string>(maxLength: 256, nullable: false),
+                    PostalCode = table.Column<int>(nullable: false),
+                    City = table.Column<string>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: false),
-                    LastModifiedDate = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -281,25 +280,6 @@ namespace JupiterCapstone.Migrations
                         name: "FK_SubCategories_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Cart",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    CartTotal = table.Column<double>(nullable: false),
-                    OrderId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cart", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Cart_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -370,15 +350,15 @@ namespace JupiterCapstone.Migrations
                     Quantity = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true),
                     DateCreated = table.Column<DateTime>(nullable: false),
-                    CartId = table.Column<string>(nullable: true)
+                    OrderId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ShoppingCartItems", x => x.ItemId);
                     table.ForeignKey(
-                        name: "FK_ShoppingCartItems_Cart_CartId",
-                        column: x => x.CartId,
-                        principalTable: "Cart",
+                        name: "FK_ShoppingCartItems_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -466,11 +446,6 @@ namespace JupiterCapstone.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cart_OrderId",
-                table: "Cart",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
                 table: "Orders",
                 column: "UserId");
@@ -496,9 +471,9 @@ namespace JupiterCapstone.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ShoppingCartItems_CartId",
+                name: "IX_ShoppingCartItems_OrderId",
                 table: "ShoppingCartItems",
-                column: "CartId");
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ShoppingCartItems_ProductId",
@@ -570,19 +545,16 @@ namespace JupiterCapstone.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Cart");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "SubCategories");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Categories");

@@ -1,14 +1,14 @@
-﻿using System;
+﻿using JupiterCapstone.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JupiterCapstone.Models
+namespace JupiterCapstone.DTO.UserDTO
 {
-    public class WishListItem
-    {   
-        [Key]
+    public class ViewWishListItem
+    {
         public string ItemId { get; set; }
 
         public virtual Product Product { get; set; }
@@ -18,9 +18,6 @@ namespace JupiterCapstone.Models
         public virtual User User { get; set; }
 
         public string UserId { get; set; }
-
-        public DateTime DateCreated { get; set; }
-       
 
     }
 }

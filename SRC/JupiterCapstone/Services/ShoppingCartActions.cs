@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Services
 {
-    public class ShoppingCartActions
+    public class ShoppingCartActions : IShoppingCartActions
     {
         private readonly ApplicationDbContext _context;
 

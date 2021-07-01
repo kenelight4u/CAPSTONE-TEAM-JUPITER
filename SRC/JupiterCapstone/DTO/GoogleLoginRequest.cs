@@ -7,16 +7,7 @@ namespace JupiterCapstone.DTO
 {
     public class GoogleLoginRequest
     {
-        public string IdToken { get; internal set; }
+        public string IdToken { get; set; }
 
-        public string Provider { get; set; }
-
-        public string Key { get; set; }
-
-        public string Email { get; set; }
-
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
     }
 }
