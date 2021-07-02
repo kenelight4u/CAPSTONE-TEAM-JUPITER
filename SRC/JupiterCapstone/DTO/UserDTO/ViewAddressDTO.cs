@@ -7,7 +7,9 @@ namespace JupiterCapstone.DTO.UserDTO
 {
     public class ViewAddressDTO
     {
-        public string Id { get; set; } 
+        public string Id { get; set; }
+
+        public string UserId { get; set; }
 
         public string Address { get; set; }
 

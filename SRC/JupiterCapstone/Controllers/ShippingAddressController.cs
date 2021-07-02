@@ -20,7 +20,7 @@ namespace JupiterCapstone.Controllers
 
         private readonly IMapper _mapper;
 
-        public ShippingAddressController(IShippingAddressService shippingAddressService, IMapper mapper, ApplicationDbContext context)
+        public ShippingAddressController(IShippingAddressService shippingAddressService, IMapper mapper)
         {
             _shippingAddressService = shippingAddressService;
             _mapper = mapper;
@@ -33,26 +33,24 @@ namespace JupiterCapstone.Controllers
             var addressDTOmodel = _mapper.Map<UsersAddress>(addressDTO);
             _shippingAddressService.AddAddress(addressDTOmodel);
             _shippingAddressService.SaveChanges();
-            //_context.SaveChanges();
-
+            
             var addressViewDto = _mapper.Map<ViewAddressDTO>(addressDTOmodel);
 
-            return CreatedAtRoute("GetaddressById", new { addressViewDto.Id }, addressViewDto);
-            
+            return CreatedAtRoute(nameof(GetaddressById), new { addressViewDto.UserId }, addressViewDto); 
         }
 
-        [HttpGet("{userId}", Name = "GetaddressById")]
-        //[Route("GetAddressByUserId")]
+        [HttpGet ("{userId}", Name = "GetaddressById")]
         public ActionResult<IEnumerable<ViewAddressDTO>> GetaddressById(string userId)
         {
-            var listOfAddress = _shippingAddressService.GetAddressByUserId(userId);
+            var listOfAddresses = _shippingAddressService.GetAddressByUserId(userId);
 
-            if (listOfAddress == null)
+            if (listOfAddresses == null)
             {
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<IEnumerable<ViewAddressDTO>>(listOfAddress));
+            return Ok(_mapper.Map<IEnumerable<ViewAddressDTO>>(listOfAddresses));
+            
         }
 
         [HttpDelete]
