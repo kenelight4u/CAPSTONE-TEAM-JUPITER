@@ -1,4 +1,5 @@
-﻿using JupiterCapstone.Models;
+﻿using JupiterCapstone.DTO.UserDTO;
+using JupiterCapstone.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,8 @@ namespace JupiterCapstone.Services.IService
 {
    public interface IWishListActions
     {
-        void AddToWishList(string productId, string userId);
-
-        List<WishListItem> GetWishListItems(string userId);
-
-        void RemoveItem(string removeUserID, string removeProductID);
+        Task<bool> AddToWishList(List<AddWishListItemDto> wishListItem);
+        Task RemoveWishList(string removeUserID, List<string> removeProductID);
+        Task <IEnumerable<ViewWishListItemDto>> GetWishListItems(string userId);
     }
 }

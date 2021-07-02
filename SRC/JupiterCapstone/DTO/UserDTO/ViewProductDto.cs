@@ -16,6 +16,6 @@ namespace JupiterCapstone.DTO.UserDTO
         //public bool IsDeleted { get; set; }
         public string Status { get; set; }
         public string ImageUrl { get; set; }
-       
+
     }
 }

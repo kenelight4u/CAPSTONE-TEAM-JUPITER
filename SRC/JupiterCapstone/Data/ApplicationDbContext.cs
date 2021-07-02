@@ -72,11 +72,26 @@ namespace JupiterCapstone.Data
                // entity.Property(e => e.UserName).IsRequired();
             });
 
+          
+            
+            
+                
+
+            
+
             //check it out incase it fails
 
            // OnModelCreatingPartial(modelBuilder);
         
         }
+        /*public override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.will
+
+            });
+        }*/
         //partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
     }

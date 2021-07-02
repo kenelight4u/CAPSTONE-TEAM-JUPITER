@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Services.IService
 {
-     public interface ISubCategory
+    public interface ISubCategory
     {
         //Task<IEnumerable<ViewSubCategoryDto>> GetAllSubCategoriesAsync();//for a user
         Task<bool> AddSubCategoryAsync(List<AddSubCategoryDto> addSubcategories);

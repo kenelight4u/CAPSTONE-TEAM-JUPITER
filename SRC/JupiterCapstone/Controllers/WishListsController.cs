@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using JupiterCapstone.DTO.UserDTO;
-using JupiterCapstone.Models;
+﻿using JupiterCapstone.DTO.UserDTO;
 using JupiterCapstone.Services.IService;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,56 +9,45 @@ using System.Threading.Tasks;
 namespace JupiterCapstone.Controllers
 {
     [ApiController]
-    [Route("WishLists")]
+    [Route("Wishlist")]
     public class WishListsController : Controller
     {
-        private readonly IWishListActions _wishList;
-
-        private readonly IMapper _mapper;
-
-        public WishListsController(IWishListActions wishList, IMapper mapper)
+        private readonly IWishListActions _repository;
+        public WishListsController(IWishListActions repository)
         {
-            _wishList = wishList;
-            _mapper = mapper;
+            _repository = repository;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToWishList(List<AddWishListItemDto> addWishList)
+        {
+            var response = await _repository.AddToWishList(addWishList);
+            if (!response)
+            {
+                return BadRequest();
+            }
+            return NoContent();
         }
 
         [HttpGet]
-        [Route("/GetWishListItemsById")]
-        public ActionResult<ViewWishListItem> GetWishListItemsById(string userId)
+        [Route("get")]
+        public async Task<IActionResult> GetWishListItem([FromQuery] string userId)
         {
-            var wishListItems = _wishList.GetWishListItems(userId);
-            if (wishListItems == null)
+            var wishlist = await _repository.GetWishListItems(userId);
+            if (wishlist==null)
+            {
                 return NotFound();
-
-            return Ok(_mapper.Map<ViewWishListItem>(wishListItems));
+            }
+            return Ok (wishlist);
         }
 
-        //discuss with Efe
-        [HttpPost]
-        [Route("/AddToWishList")]
-        public ActionResult<ViewWishListItem> AddToAWishList(AddWishListItem wishListItem)
-        {
-            var wishlistModel = _mapper.Map<WishListItem>(wishListItem);
-            _wishList.AddToWishList(wishlistModel.UserId, wishlistModel.ProductId);
-
-            var viewWishListItem = _mapper.Map<ViewWishListItem>(wishlistModel);
-
-            return CreatedAtRoute(nameof(GetWishListItemsById), new { Id = viewWishListItem.ItemId }, viewWishListItem);
-        }
-
-
-        //revisit, mistake
         [HttpDelete]
-        [Route("/RemoveFromWishList")]
-        public ActionResult RemoveItem(string userId, string productId)
+        [Route("delete")]
+        public async Task<IActionResult> DeleteWishListItem([FromQuery] string userId, [FromBody] List<string> itemId)
         {
-            var fromModel = _wishList.GetWishListItems(userId);
-            if (fromModel == null)
-                return NotFound();
-
-            _wishList.RemoveItem(userId, productId);
-
+            await _repository.RemoveWishList(userId, itemId);
             return NoContent();
+
         }
 
     }
