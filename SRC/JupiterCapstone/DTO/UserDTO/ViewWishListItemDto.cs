@@ -5,11 +5,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.DTO.UserDTO
 {
-    public class ViewSubCategoryDto
+    public class ViewWishListItemDto:ViewProductDto
     {
-        public string SubCategoryId { get; set; }
-        public string SubCategoryName { get; set; }
-
-
     }
 }

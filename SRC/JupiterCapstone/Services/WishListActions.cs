@@ -1,6 +1,8 @@
 ﻿using JupiterCapstone.Data;
+using JupiterCapstone.DTO.UserDTO;
 using JupiterCapstone.Models;
 using JupiterCapstone.Services.IService;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,7 @@ namespace JupiterCapstone.Services
             _context = context;
         }
 
-        public void AddToWishList(string productId, string userId)
+       /* public void AddToWishList(string productId, string userId)
         {
             // Retrieve the product from the database.
             var wishItem = _context.WishListItems.SingleOrDefault(w => w.UserId == userId && w.ProductId == productId);
@@ -38,26 +40,88 @@ namespace JupiterCapstone.Services
             }
             
             _context.SaveChanges();
+        }*/
+        public async Task<bool> AddToWishList(List<AddWishListItemDto> wishListItem)
+        {
+            if (wishListItem.Count==0)
+            {
+                return false;
+            }
+
+            foreach (var itemtoAdd in wishListItem)
+            {
+                var checkforProduct = await _context.WishListItems.FirstOrDefaultAsync(e=>e.ProductId==itemtoAdd.ProductId);
+                //check if product is already there
+                if (checkforProduct != null)
+                {
+                    return false;
+                }
+                WishListItem newwishItem = new WishListItem
+                {
+                    ItemId = Guid.NewGuid().ToString(),
+                    ProductId = itemtoAdd.ProductId,
+                    UserId = itemtoAdd.UserId,
+                    DateCreated = DateTime.Now
+                };
+                await _context.WishListItems.AddAsync(newwishItem);
+                await _context.SaveChangesAsync();
+               
+            }
+            return true;
+     
         }
 
-        public List<WishListItem> GetWishListItems(string userId)
+        public async Task<IEnumerable<ViewWishListItemDto>> GetWishListItems(string userId)
         {
-            return _context.WishListItems.Where(w => w.UserId == userId).ToList();
-        }
-        
-        public void RemoveItem(string removeUserID, string removeProductID)
-        {
+            var userWishLists = await  _context.WishListItems.Where(e => e.UserId == userId).ToListAsync();
+            if (userWishLists.Count==0)
+            {
+                return null;
+            }
+            List<ViewWishListItemDto> wishListDto = new List<ViewWishListItemDto>();
+            foreach (var wishList in userWishLists)
+            {
+                var getproduct = await _context.Products.Where(e => e.Id == wishList.ProductId).ToListAsync();
+                                
+                foreach (var item in getproduct)
+                {
 
+                    wishListDto.Add(new ViewWishListItemDto
+                    {
+                        ProductId = item.Id,
+                        Price = item.Price,
+                        Description = item.Description,
+                        SupplierName = item.SupplierName,
+                        Quantity = item.Quantity,
+                        ProductName = item.ProductName,
+                        Status = item.Status,
+                        ImageUrl = item.ImageUrl,
+                    });
+
+                }
+                
+               
+            }
+
+            return wishListDto;
+
+        }
+
+        public async Task RemoveWishList(string userId, List<string> removeProductId)
+        {
             try
             {
-                var myItem = (from c in _context.WishListItems where c.UserId == removeUserID && c.Product.Id == removeProductID select c).FirstOrDefault();
-
-                if (myItem != null)
+                var userWishList = await _context.WishListItems.Where(e => e.UserId == userId).ToListAsync();
+                //var myItem = await (from c in _context.WishListItems where c.UserId == userID && c.Product.Id == removeProductID select c).FirstOrDefaultAsync();
+                foreach (var itemToDelete in removeProductId)
                 {
+                    var wishListTodelete = userWishList.FirstOrDefault(e => e.ProductId ==itemToDelete);
                     // Remove Item.
-                    _context.WishListItems.Remove(myItem);
-                    _context.SaveChanges();
-                }
+                    _context.WishListItems.Remove(wishListTodelete);
+                    await _context.SaveChangesAsync();
+
+                }                
+                
             }
             catch (Exception exp)
             {

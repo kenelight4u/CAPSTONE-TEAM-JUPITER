@@ -96,13 +96,6 @@ namespace JupiterCapstone
                 ValidateLifetime = true
             };
 
-            /*var applicationSettings = Configuration.GetSection("AddSettings");
-            services.Configure<ApplicationSettings>(applicationSettings);
-
-            var appSettingsSecretKey = applicationSettings.Get<ApplicationSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettingsSecretKey.JWT_Secret);*/
-
-
             services.AddSingleton(tokenValidationParameters);
             services.AddAuthentication(x =>
             {
