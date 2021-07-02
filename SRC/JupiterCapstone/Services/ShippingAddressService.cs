@@ -28,7 +28,7 @@ namespace JupiterCapstone.Services
 
         public IEnumerable<UsersAddress> GetAddressByUserId(string id)
         {
-            return _context.UsersAddresses.ToList();
+            return _context.UsersAddresses.Where(p => p.UserId == id).ToList();
         }
 
         public bool SaveChanges()
@@ -36,15 +36,6 @@ namespace JupiterCapstone.Services
             return (_context.SaveChanges() >= 0);
         }
 
-        //public void DeleteAddress(UsersAddress address)
-        //{
-        //    if (address == null)
-        //        throw new ArgumentNullException(nameof(address));
-
-        //    _context.UsersAddresses.Remove(address);
-        //}
-
-       
         public void DeleteUserAddresse( string userId, List<string> addressIdToDelete)
         {
             List<UsersAddress> userAddress = new List<UsersAddress>();

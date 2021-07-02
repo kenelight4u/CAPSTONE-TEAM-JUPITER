@@ -75,8 +75,9 @@ namespace JupiterCapstone
             //registering Send Grid 
             services.AddTransient<IMailService, SendGridMailService>();
            
-            // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+             //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddAutoMapper(typeof(UsersProfile));
+            services.AddAutoMapper(typeof(ShippingAddressProfile));
 
             // For Identity  
             services.AddIdentity<User, IdentityRole>()
