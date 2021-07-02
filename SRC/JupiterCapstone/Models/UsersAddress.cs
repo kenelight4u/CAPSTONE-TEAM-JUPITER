@@ -9,10 +9,9 @@ namespace JupiterCapstone.Models
     {
         public string Id { get; set; }
         public string Address { get; set; }
-        public string PostalCode { get; set; }
+        public int PostalCode { get; set; }
         public string City { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public DateTime LastModifiedDate { get; set; }
         public virtual User User { get; set; }
         public string UserId { get; set; }
     }

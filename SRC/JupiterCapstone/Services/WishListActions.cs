@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Services
 {
-    public class WishListActions:IWishList
+    public class WishListActions:IWishListActions
     {
         private readonly ApplicationDbContext _context;
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Services.IService
 {
-   public interface IWishList
+   public interface IWishListActions
     {
         Task<bool> AddToWishList(List<AddWishListItemDto> wishListItem);
         Task RemoveWishList(string removeUserID, List<string> removeProductID);

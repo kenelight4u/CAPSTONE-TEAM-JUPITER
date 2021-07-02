@@ -12,8 +12,8 @@ namespace JupiterCapstone.Controllers
     [Route("Wishlist")]
     public class WishListsController : Controller
     {
-        private readonly IWishList _repository;
-        public WishListsController(IWishList repository)
+        private readonly IWishListActions _repository;
+        public WishListsController(IWishListActions repository)
         {
             _repository = repository;
         }
