@@ -90,8 +90,10 @@ namespace JupiterCapstone
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(JwtSecretkey),
-                ValidateIssuer = false,
-                ValidateAudience = false,
+                ValidIssuer = Configuration["TokenConfiguration:JwtSettings:ValidIssuer"],
+                ValidAudience= Configuration["TokenConfiguration:JwtSettings:ValidAudience"],
+                ValidateIssuer = true,
+                ValidateAudience = true,
                 RequireExpirationTime = false,
                 ValidateLifetime = true
             };
@@ -140,7 +142,7 @@ namespace JupiterCapstone
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ADUABA API V1");
-                //c.RoutePrefix = string.Empty;
+                c.RoutePrefix = string.Empty;
             });
 
             app.UseHttpsRedirection();
