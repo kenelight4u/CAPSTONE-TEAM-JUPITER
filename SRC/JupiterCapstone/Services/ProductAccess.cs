@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.EntityFrameworkCore;
-using JupiterCapstone.DTO.UserDTO;
-using JupiterCapstone.DTO.Admin;
 
 namespace JupiterCapstone.Services
 {
