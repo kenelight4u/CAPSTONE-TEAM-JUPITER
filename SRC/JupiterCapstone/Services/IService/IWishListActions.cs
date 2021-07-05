@@ -9,10 +9,12 @@ namespace JupiterCapstone.Services.IService
 {
    public interface IWishListActions
    {
-        Task<bool> AddToWishList(List<AddWishListItemDto> wishListItem);
+        
+        Task<bool> AddToWishListAsync(List<AddWishListItemDto> wishListItem);
 
-        Task RemoveWishList(string removeUserID, List<string> removeProductID);
+        Task<IEnumerable<ViewWishListItemDto>> GetWishListItemsAsync(string userId);
 
-        Task <IEnumerable<ViewWishListItemDto>> GetWishListItems(string userId);
+        Task RemoveWishListAsync(string userId, List<string> removeItemId);
+
    }
 }

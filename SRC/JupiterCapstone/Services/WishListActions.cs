@@ -13,6 +13,7 @@ namespace JupiterCapstone.Services
     public class WishListActions : IWishListActions
     {
         private readonly ApplicationDbContext _context;
+
         private readonly IProduct _product;
 
         public WishListActions(ApplicationDbContext context, IProduct product)
