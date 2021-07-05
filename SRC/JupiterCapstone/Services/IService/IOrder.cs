@@ -1,7 +1,7 @@
 ﻿using JupiterCapstone.Models;
-using JupiterCapstone.ViewModels.EditModels;
-using JupiterCapstone.ViewModels.InputModels;
-using JupiterCapstone.ViewModels.OutputModels;
+using JupiterCapstone.DTO.EditModels;
+using JupiterCapstone.DTO.InputModels;
+using JupiterCapstone.DTO.OutputModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
