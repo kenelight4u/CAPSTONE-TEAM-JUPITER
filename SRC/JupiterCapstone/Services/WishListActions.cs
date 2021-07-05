@@ -30,6 +30,7 @@ namespace JupiterCapstone.Services
 
             foreach (var itemtoAdd in wishListItem)
             {
+
                 var checkforItem = await _context.WishListItems.FirstOrDefaultAsync(e=>e.ProductId==itemtoAdd.ProductId && e.UserId==itemtoAdd.UserId);
                 if (checkforItem==null)
                 {
@@ -43,7 +44,8 @@ namespace JupiterCapstone.Services
                     await _context.WishListItems.AddAsync(newwishItem);
                     await _context.SaveChangesAsync();
 
-                }else if (checkforItem.ProductId==itemtoAdd.ProductId)
+                }
+                else if (checkforItem.ProductId==itemtoAdd.ProductId)
                 {
                     return false;
                 }

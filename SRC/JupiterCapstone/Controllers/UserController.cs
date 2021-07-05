@@ -22,7 +22,7 @@ using Twilio.Types;
 
 namespace JupiterCapstone.Controllers
 {
-    [Route("api/[controller]")]
+
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -46,7 +46,7 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpPost]
-        [Route("ForgotPasswordRequest/Sms")]
+        [Route("/ForgotPasswordRequest/Sms")]
         public async Task<IActionResult> SendSms(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -79,7 +79,7 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpPost]
-        [Route("ForgotPasswordRequest/Email")]
+        [Route("/ForgotPasswordRequest/Email")]
         public async Task<IActionResult> ForgotPasswordAsync(EmailForToken email)
         {
             
@@ -107,7 +107,7 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpPost]
-        [Route("ValidateResetToken")]
+        [Route("/ValidateResetToken")]
         public async Task<IActionResult> ValidateResetTokenAsync(string email, string token)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -127,7 +127,7 @@ namespace JupiterCapstone.Controllers
 
 
         [HttpPost]
-        [Route("ResetPassword")]
+        [Route("/ResetPassword")]
         public async Task<IActionResult> ResetPasswordAsync(string email, ResetPassword model)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -146,7 +146,7 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpPatch]
-        [Route("Edit-Profile")]
+        [Route("/Edit-Profile")]
         public IActionResult UpdateUser(string userId, JsonPatchDocument<UpdateUserDetails> userToUpdate)
         {
             var attemptingUser = _service.GetUser(userId);

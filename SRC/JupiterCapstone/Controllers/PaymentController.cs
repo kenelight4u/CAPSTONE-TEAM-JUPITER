@@ -1,6 +1,6 @@
 ﻿using JupiterCapstone.Services.IService;
-using JupiterCapstone.ViewModels.EditModels;
-using JupiterCapstone.ViewModels.InputModels;
+using JupiterCapstone.DTO.EditModels;
+using JupiterCapstone.DTO.InputModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Controllers
 {
-    [Route("api/v1/Payment")]
+    //[Route("api/v1/Payment")]
     [ApiController]
     public class PaymentController : ControllerBase
     {
@@ -27,7 +27,7 @@ namespace JupiterCapstone.Controllers
 
 
         [HttpPut]
-        [Route("")]
+        [Route("/UpdatePayment")]
         public async Task<IActionResult> UpdatePayment([FromBody] PaymentEM model)
         {
             try
@@ -74,7 +74,7 @@ namespace JupiterCapstone.Controllers
 
 
         [HttpGet]
-        [Route("{paymentId}", Name = "GetPaymentById")]
+        [Route("Get-Payment/{paymentId}", Name = "GetPaymentById")]
         public async Task<IActionResult> GetPaymentById(string paymentId)
         {
             try
@@ -89,7 +89,7 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpPost]
-        [Route("")]
+        [Route("/CreatePayment")]
         public async Task<IActionResult> CreatePayment([FromBody] PaymentIM model)
         {
             try

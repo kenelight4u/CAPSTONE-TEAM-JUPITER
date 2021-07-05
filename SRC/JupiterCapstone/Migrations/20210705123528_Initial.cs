@@ -41,6 +41,7 @@ namespace JupiterCapstone.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     PasswordHash = table.Column<string>(nullable: true),
                     ResetPasswordToken = table.Column<string>(nullable: true),
+                    ProfilePicture = table.Column<string>(nullable: true),
                     FirstName = table.Column<string>(nullable: false),
                     LastName = table.Column<string>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: false),
