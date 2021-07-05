@@ -14,6 +14,8 @@ namespace JupiterCapstone.DTO
 
         public string PhoneNumber { get; set; }
 
+        public string ProfilePicture { get; set; }
+
         public DateTime LastModifiedDate { get; set; } = DateTime.Now;
 
     }

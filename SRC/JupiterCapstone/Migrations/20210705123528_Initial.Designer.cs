@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JupiterCapstone.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210627164325_update")]
-    partial class update
+    [Migration("20210705123528_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -52,54 +52,36 @@ namespace JupiterCapstone.Migrations
                     b.ToTable("CardDetails");
                 });
 
-            modelBuilder.Entity("JupiterCapstone.Models.Cart", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<double>("CartTotal")
-                        .HasColumnType("float");
-
-                    b.Property<string>("OrderId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("Cart");
-                });
-
             modelBuilder.Entity("JupiterCapstone.Models.CartItem", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("ItemId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CartId")
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OrderId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProductId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ItemId");
 
-                    b.HasIndex("CartId");
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CartItem");
+                    b.ToTable("ShoppingCartItems");
                 });
 
             modelBuilder.Entity("JupiterCapstone.Models.Category", b =>
@@ -327,6 +309,12 @@ namespace JupiterCapstone.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProfilePicture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResetPasswordToken")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -356,19 +344,19 @@ namespace JupiterCapstone.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("PostalCode")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -380,20 +368,13 @@ namespace JupiterCapstone.Migrations
                     b.ToTable("UsersAddresses");
                 });
 
-            modelBuilder.Entity("JupiterCapstone.Models.WishList", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("WishLists");
-                });
-
             modelBuilder.Entity("JupiterCapstone.Models.WishListItem", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("ItemId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ProductId")
                         .HasColumnType("nvarchar(450)");
@@ -401,18 +382,13 @@ namespace JupiterCapstone.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("WishListId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
+                    b.HasKey("ItemId");
 
                     b.HasIndex("ProductId");
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("WishListId");
-
-                    b.ToTable("WishListItem");
+                    b.ToTable("WishListItems");
                 });
 
             modelBuilder.Entity("JupiterCapstone.Services.AuthorizationServices.RefreshToken", b =>
@@ -589,18 +565,11 @@ namespace JupiterCapstone.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("JupiterCapstone.Models.Cart", b =>
-                {
-                    b.HasOne("JupiterCapstone.Models.Order", "Order")
-                        .WithMany("Carts")
-                        .HasForeignKey("OrderId");
-                });
-
             modelBuilder.Entity("JupiterCapstone.Models.CartItem", b =>
                 {
-                    b.HasOne("JupiterCapstone.Models.Cart", "Cart")
-                        .WithMany("CartItems")
-                        .HasForeignKey("CartId");
+                    b.HasOne("JupiterCapstone.Models.Order", null)
+                        .WithMany("Carts")
+                        .HasForeignKey("OrderId");
 
                     b.HasOne("JupiterCapstone.Models.Product", "Product")
                         .WithMany()
@@ -661,10 +630,6 @@ namespace JupiterCapstone.Migrations
                     b.HasOne("JupiterCapstone.Models.User", "User")
                         .WithMany("WishListItems")
                         .HasForeignKey("UserId");
-
-                    b.HasOne("JupiterCapstone.Models.WishList", "WishList")
-                        .WithMany("WishListItems")
-                        .HasForeignKey("WishListId");
                 });
 
             modelBuilder.Entity("JupiterCapstone.Services.AuthorizationServices.RefreshToken", b =>

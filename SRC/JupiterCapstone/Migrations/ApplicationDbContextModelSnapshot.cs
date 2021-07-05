@@ -307,6 +307,9 @@ namespace JupiterCapstone.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProfilePicture")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ResetPasswordToken")
                         .HasColumnType("nvarchar(max)");
 

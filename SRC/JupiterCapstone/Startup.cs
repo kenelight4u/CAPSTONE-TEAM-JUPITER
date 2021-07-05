@@ -115,6 +115,12 @@ namespace JupiterCapstone
 
             });
 
+            //password tightening up
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 8; 
+            });
+
             services.AddControllers();
             services.AddMvc();
             services.AddSwaggerGen();
