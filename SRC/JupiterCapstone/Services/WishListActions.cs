@@ -50,12 +50,14 @@ namespace JupiterCapstone.Services
 
             foreach (var itemtoAdd in wishListItem)
             {
-                var checkforProduct = await _context.WishListItems.FirstOrDefaultAsync(e=>e.ProductId==itemtoAdd.ProductId);
+                var checkforProduct = await _context.WishListItems.FirstOrDefaultAsync(e => e.ProductId == itemtoAdd.ProductId );
+
                 //check if product is already there
                 if (checkforProduct != null)
                 {
                     return false;
                 }
+
                 WishListItem newwishItem = new WishListItem
                 {
                     ItemId = Guid.NewGuid().ToString(),
