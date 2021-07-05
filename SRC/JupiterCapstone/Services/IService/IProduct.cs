@@ -16,7 +16,12 @@ namespace JupiterCapstone.Services.IService
         Task DeleteProductAsync(List<string>productToDelete);
         Task<IEnumerable<ViewProductDto>> GetProductsByNameAsync(List<string>products);
         Task<IEnumerable<ViewProductDto>> GetProductsBySubCategoryIdAsync(string subCategoryId);
-       
+
+        bool CheckQuantityOfProducts(string productId);
+        bool ReduceFromProductQuantity(string productId);
+        bool AddItemToProductQuantity(String productId);
+
+
 
     }
 }

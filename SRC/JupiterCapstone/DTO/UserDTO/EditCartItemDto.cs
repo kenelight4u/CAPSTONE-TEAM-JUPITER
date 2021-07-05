@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.DTO.UserDTO
 {
-    public class AddCartItemDto
+    public class EditCartItemDto
     {
-        public string ProductId { get; set; }
-        public string UserId { get; set; }  
+        public string ItemId { get; set; }
+        public int Quantity { get; set; }
     }
 }

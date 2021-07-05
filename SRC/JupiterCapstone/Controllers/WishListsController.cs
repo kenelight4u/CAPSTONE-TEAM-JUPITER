@@ -11,29 +11,40 @@ namespace JupiterCapstone.Controllers
     [ApiController]
     [Route("Wishlist")]
     public class WishListsController : Controller
-    {
+    { 
         private readonly IWishListActions _repository;
-        public WishListsController(IWishListActions repository)
+        private readonly IProduct _product; 
+        public WishListsController(IWishListActions repository, IProduct product)
         {
             _repository = repository;
+            _product = product;
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddToWishList(List<AddWishListItemDto> addWishList)
+        [Route("add-items-towishlist")]
+        public async Task<IActionResult> AddToWishList([FromBody]List<AddWishListItemDto> addWishList)
         {
-            var response = await _repository.AddToWishList(addWishList);
+            foreach (var item in addWishList)
+            {
+                var checkquantity = _product.CheckQuantityOfProducts(item.ProductId);
+                if (!checkquantity)
+                {
+                    return BadRequest(new { message = "Product out of stock" });
+                }
+            }
+            var response = await _repository.AddToWishListAsync(addWishList);
             if (!response)
             {
-                return BadRequest();
+                return BadRequest(new { message="Item already exists in your wishList"});
             }
-            return NoContent();
+            return Ok(new { message="Item Added to wishLists"});
         }
 
         [HttpGet]
-        [Route("get")]
+        [Route("get-all-wishitems")]
         public async Task<IActionResult> GetWishListItem([FromQuery] string userId)
         {
-            var wishlist = await _repository.GetWishListItems(userId);
+            var wishlist = await _repository.GetWishListItemsAsync(userId);
             if (wishlist==null)
             {
                 return NotFound();
@@ -42,10 +53,10 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpDelete]
-        [Route("delete")]
+        [Route("remove-wishlist-items")]
         public async Task<IActionResult> DeleteWishListItem([FromQuery] string userId, [FromBody] List<string> itemId)
         {
-            await _repository.RemoveWishList(userId, itemId);
+            await _repository.RemoveWishListAsync(userId, itemId);
             return NoContent();
 
         }

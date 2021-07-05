@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.DTO.UserDTO
 {
-    public class ViewWishListItemDto
+    public class ViewCartItemDto
     {
         public string ItemId { get; set; }
         public string ProductId { get; set; }
@@ -15,7 +15,7 @@ namespace JupiterCapstone.DTO.UserDTO
         public decimal ProductUnitPrice { get; set; }
         public string ProductImage { get; set; }
         public string Status { get; set; }
-        public string SupplierName { get; set; }
+        public string SupplierName{get;set;}
 
         //public int TotalQuantityAvailable { get; set; }
         //public int QuantityOfProductInCart { get; set; }
