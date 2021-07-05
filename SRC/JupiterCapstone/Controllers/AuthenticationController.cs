@@ -18,7 +18,6 @@ namespace JupiterCapstone.Controllers
 {
     
     [ApiController]
-    [Route("api/[controller]")]
     public class AuthenticationController : ControllerBase
     {
         private readonly IIdentityService _identityService;

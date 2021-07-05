@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JupiterCapstone.ViewModels.EditModels
+namespace JupiterCapstone.DTO.EditModels
 {
     public class PaymentEM
     {

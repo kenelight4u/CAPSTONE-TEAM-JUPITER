@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Controllers
 {
-    [Route("api/[controller]")]
+    
     [ApiController]
     public class ShippingAddressController : ControllerBase
     {
@@ -27,7 +27,7 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpPost]
-        [Route("AddShoppingAddress")]
+        [Route("/AddShoppingAddress")]
         public ActionResult<ViewAddressDTO> AddShippingAddress(AddAddressDTO addressDTO)
         {
             var addressDTOmodel = _mapper.Map<UsersAddress>(addressDTO);
@@ -36,11 +36,11 @@ namespace JupiterCapstone.Controllers
             
             var addressViewDto = _mapper.Map<ViewAddressDTO>(addressDTOmodel);
 
-            return CreatedAtRoute(nameof(GetaddressById), new { addressViewDto.UserId }, addressViewDto); 
+            return CreatedAtRoute(nameof(GetUserAdressById), new { addressViewDto.UserId }, addressViewDto); 
         }
 
-        [HttpGet ("{userId}", Name = "GetaddressById")]
-        public ActionResult<IEnumerable<ViewAddressDTO>> GetaddressById(string userId)
+        [HttpGet ("Get-UserAddress/{userId}", Name = "GetUserAdressById")]
+        public ActionResult<IEnumerable<ViewAddressDTO>> GetUserAdressById(string userId)
         {
             var listOfAddresses = _shippingAddressService.GetAddressByUserId(userId);
 
@@ -54,17 +54,12 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpDelete]
-        [Route("DeleteUserAdress")]
+        [Route("/DeleteUserAdress")]
         public IActionResult DeleteUserExpenses([FromQuery] string userId, [FromBody] List<string> addessIdToDelete)
         {
             _shippingAddressService.DeleteUserAddresse(userId, addessIdToDelete);
 
             return NoContent();
         }
-
-
-
-
-
     }
 }
