@@ -19,19 +19,20 @@ namespace JupiterCapstone.Controllers
        }
 
         [HttpGet]
+        [Route("get-all-categories")]
         public async Task<IActionResult> GetAllCategories()
         {
             var categories = await _repository.GetAllCategoriesAsync();
             if (categories==null)
             {
                 return NotFound();
-            }
+            } 
 
             return Ok(categories);
         }
 
         [HttpPost]
-        [Route("add")]
+        [Route("add-categories")]
         public async Task<IActionResult> AddCategories([FromBody] List<AddCategoryDto> addCategories)
         {
             var response=await _repository.AddCategoryAsync(addCategories);
@@ -42,8 +43,9 @@ namespace JupiterCapstone.Controllers
             return NoContent();
 
         }
+
         [HttpPut]
-        [Route("update")]
+        [Route("update-categories")]
         public async Task<IActionResult> UpdateCategories([FromBody] List<UpdateCategoryDto> updateCategories)
         {
             var response = await _repository.UpdateCategoryAsync(updateCategories);
@@ -54,8 +56,9 @@ namespace JupiterCapstone.Controllers
             return NoContent();
 
         }
+
         [HttpDelete]
-        [Route("delete")]
+        [Route("remove-categories")]
         public async Task<IActionResult> DeleteCategories(List<string> deleteCategories)
         {
             if (deleteCategories.Count==0)

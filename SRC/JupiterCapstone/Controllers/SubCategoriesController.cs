@@ -19,7 +19,7 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpGet]
-        [Route("categoryId")]
+        [Route("get-subcategories-bycategoryId")]
         public async Task<IActionResult> GetSubCategoriesByCategoryId([FromQuery] string categoryId)
         {
             if (categoryId==null)
@@ -47,7 +47,7 @@ namespace JupiterCapstone.Controllers
         }*/
 
         [HttpPost]
-        [Route("add")]
+        [Route("add-subcategories")]
         public async Task<IActionResult> AddSubCategories([FromBody] List<AddSubCategoryDto> addSubCategories)
         {
             var reponse = await _repository.AddSubCategoryAsync(addSubCategories);
@@ -61,7 +61,7 @@ namespace JupiterCapstone.Controllers
 
         }
         [HttpPut]
-        [Route("update")]
+        [Route("update-subcategories")]
         public async Task<IActionResult> UpdateSubCategories([FromBody] List<UpdateSubCategoryDto> updateSubCategories)
         {
            var response=await _repository.UpdateSubCategoryAsync(updateSubCategories);
@@ -74,7 +74,7 @@ namespace JupiterCapstone.Controllers
 
         }
         [HttpDelete]
-        [Route("delete")]
+        [Route("remove-subcategories")]
         public async Task<IActionResult> DeleteSubCategories(List<string> deleteSubCategories) 
         {
             if (deleteSubCategories.Count==0)

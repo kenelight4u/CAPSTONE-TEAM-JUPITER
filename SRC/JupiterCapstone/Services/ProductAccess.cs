@@ -65,18 +65,15 @@ namespace JupiterCapstone.Services
                     var dbProduct = allProducts.FirstOrDefault(e => e.Id==product);
                     _context.Products.Remove(dbProduct);
                    
-
                 }
 
                   await SaveChangesAsync();
-
-
         }
 
         public async Task<IEnumerable<ViewProductDto>> GetAllProductsAsync()
         {
-            var products = await _context.Products.ToListAsync();
-        
+            var products = await _context.Products.Where(e=>e.Quantity !=0).OrderBy(e=>e.CreatedDateTime).ToListAsync();
+
             List<ViewProductDto> viewProduct = new List<ViewProductDto>();
 
             foreach (var product in products)
@@ -91,7 +88,8 @@ namespace JupiterCapstone.Services
                     Quantity = product.Quantity,
                     ProductName = product.ProductName,
                     Status = product.Status,                
-                    ImageUrl=product.ImageUrl
+                    ImageUrl=product.ImageUrl,
+                    SubCategoryId=product.SubCategoryId
 
                 }
               );
@@ -132,7 +130,7 @@ namespace JupiterCapstone.Services
         }
         public async Task<IEnumerable<ViewProductDto>> GetProductsByNameAsync(List<string> products)
         {
-            var productsDb = await _context.Products.ToListAsync();
+            var productsDb = await _context.Products.Where(e=>e.Quantity!=0).OrderBy(e => e.CreatedDateTime).ToListAsync();
             List<ViewProductDto> viewProduct = new List<ViewProductDto>();
             if (products.Count==0)
             {
@@ -143,7 +141,7 @@ namespace JupiterCapstone.Services
                
                 foreach (var product in products)
                 {
-                    
+
                     var allProducts = productsDb.FindAll(e => e.ProductName.ToLower().Replace(" ", "") == product.ToLower().Replace(" ", ""));
                     if (allProducts.Count==0)
                     {                      
@@ -181,7 +179,8 @@ namespace JupiterCapstone.Services
         }
         public async Task<IEnumerable<ViewProductDto>> GetProductsBySubCategoryIdAsync(string subCategoryId)
         {
-            var products = await _context.Products.Where(e => e.SubCategoryId == subCategoryId ).ToListAsync();
+            var products = await _context.Products.Where(e => e.SubCategoryId == subCategoryId && e.Quantity != 0)
+                .OrderBy(p=>p.CreatedDateTime).ToListAsync();
             if (products.Count == 0)
             {
                 return null;
@@ -203,7 +202,6 @@ namespace JupiterCapstone.Services
                         Status = product.Status,
                         ImageUrl = product.ImageUrl,
 
-
                     });
 
                 }
@@ -217,6 +215,66 @@ namespace JupiterCapstone.Services
             await _context.SaveChangesAsync();
         }
 
+        public bool CheckQuantityOfProducts(string productId)
+        {
+            var productDb = _context.Products.Where(e=>e.Id==productId).FirstOrDefault();
+            if (productDb.Quantity!=0)
+            {
+                productDb.Status = "In Stock";
+                _context.SaveChanges();
+                return true;
+            }
+            else 
+            {
+                productDb.Status = "Out of Stock";
+                _context.SaveChanges();
+                return false;
+            }
+
+           
+        }//if youre adding from the available quantity to the cart, then db quantity should reduce a
+        public bool ReduceFromProductQuantity(string productId)
+        {
+            var productDb = _context.Products.Where(e => e.Id == productId).FirstOrDefault();
+            var availableQuantity =productDb.Quantity-1;
+          
+            if (availableQuantity>=0)
+            {
+                productDb.Quantity = availableQuantity;
+                productDb.Status = "In Stock";
+                _context.SaveChanges();
+                return true;
+            }
+            else 
+            {
+                productDb.Quantity = 0;
+                productDb.Status = "out of Stock";
+                _context.SaveChanges();
+                return false; 
+            }
+           
+        }
+        //if youre removing from the available quantity in the cart, then db quantity should increase
+        public bool AddItemToProductQuantity(string productId)
+        {
+            var productDb = _context.Products.Where(e => e.Id == productId).FirstOrDefault();
+            var availableQuantity = productDb.Quantity + 1;
+            if (availableQuantity > 0)
+            {
+                productDb.Quantity = availableQuantity;
+                productDb.Status = "In Stock";
+                _context.SaveChanges();
+                return true;
+            }
+            else 
+            {
+                productDb.Quantity = availableQuantity;
+                productDb.Status = "out of Stock";
+                _context.SaveChanges();
+                return false;
+            }
+
+        }
        
         public string UploadImage(string filePath)
         {

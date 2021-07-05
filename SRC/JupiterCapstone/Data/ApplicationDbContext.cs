@@ -72,27 +72,42 @@ namespace JupiterCapstone.Data
                // entity.Property(e => e.UserName).IsRequired();
             });
 
-          
-            
-            
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.HasMany(e => e.SubCategories)
+                .WithOne(e => e.Category)
+                .OnDelete(DeleteBehavior.ClientCascade);
                 
 
-            
+            });
+
+            modelBuilder.Entity<SubCategory>(entity =>
+            {
+                entity.HasMany(e => e.Products)
+                .WithOne(e => e.SubCategory)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+
+            });
+
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.HasOne(e => e.SubCategory)
+                .WithMany(e=>e.Products)
+                .OnDelete(DeleteBehavior.Cascade);
+                
+            });
+           
+
+
+
+
 
             //check it out incase it fails
 
-           // OnModelCreatingPartial(modelBuilder);
-        
+            // OnModelCreatingPartial(modelBuilder);
+
         }
-        /*public override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Category>(entity =>
-            {
-                entity.will
-
-            });
-        }*/
-        //partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
+       
     }
 }
