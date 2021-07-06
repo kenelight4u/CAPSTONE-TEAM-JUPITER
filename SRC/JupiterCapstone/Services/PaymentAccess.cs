@@ -124,5 +124,109 @@ namespace JupiterCapstone.Services
                 throw;
             }
         }
+
+        public IEnumerable<PaymentOM> GetUserPayments(string userId)
+        {
+            var userPayments = _context.Payments.Where(e => e.UserId == userId).ToList();
+            if (userPayments.Count() == 0)
+            {
+                return null;
+            }
+            List<PaymentOM> cartDto = new List<PaymentOM>();
+            foreach (var Item in userPayments)
+            {
+                cartDto.Add(new PaymentOM
+                {
+                    Id = Item.Id,
+                    PaymentDate = Item.PaymentDateTime,
+                    Amount = Item.Amount,
+                    TransactionId = Item.TransactionId,
+                    PaymentStatus = Item.PaymentStatus,
+                    UserId = Item.UserId,
+                    UserName = Item.User.FirstName + Item.User.LastName
+
+                });
+            }
+
+            return cartDto;
+        }
+
+
+        public bool AddCardDetail(CardIM model)
+        {
+            try
+            {
+                using TransactionScope ts = new TransactionScope();
+                var _model = new CardDetail
+                {
+                    Id = model.Id,
+                    CardHolderName = model.CardHolderName,
+                    CardNumber = model.CardNumber,
+                    ExpiryDate = model.ExpiryDate,
+                    UserId = model.UserId,
+                   
+                    CVV = model.CVV,
+                };
+                _context.CardDetails.Add(_model);
+
+                int bit = _context.SaveChanges();
+                ts.Complete();
+                if (bit > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public bool DeleteCardDetail(string cardId)
+        {
+            try
+            {
+                using TransactionScope ts = new TransactionScope();
+                var carddetail = _context.CardDetails.Where(s => s.Id == cardId).FirstOrDefault();
+                if (carddetail == null)
+                {
+                    return false;
+                }
+                _context.CardDetails.Remove(carddetail);
+
+                _context.SaveChanges();
+                ts.Complete();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public bool UpdateCardDetails(CardEM model)
+        {
+            try
+            {
+                using TransactionScope ts = new TransactionScope();
+                var carddetail = _context.CardDetails.Where(s => s.Id == model.Id).FirstOrDefault();
+                if (carddetail != null)
+                {
+                    carddetail.ExpiryDate = model.ExpiryDate;
+                    carddetail.CardNumber = model.CardNumber;
+                    carddetail.CardHolderName = model.CardHolderName;
+                    carddetail.UserId = model.UserId;
+                    carddetail.CVV = model.CVV;
+                    
+                }
+                _context.SaveChanges();
+                ts.Complete();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
     }
 }
