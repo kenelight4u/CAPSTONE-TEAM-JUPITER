@@ -35,7 +35,7 @@ namespace JupiterCapstone.Models
 
         public string ImageUrl { get; set; }
         public bool IsDeleted { get; set; }
-        [Required]
+        
         public string Status { get; set; }
         public DateTime CreatedDateTime { get; set; } = DateTime.Now;
         public DateTime LastModified { get; set; }

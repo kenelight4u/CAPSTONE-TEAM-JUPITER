@@ -203,7 +203,6 @@ namespace JupiterCapstone.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubCategoryId")

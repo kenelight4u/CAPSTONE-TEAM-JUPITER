@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JupiterCapstone.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210704230459_TestingEntity")]
-    partial class TestingEntity
+    [Migration("20210706191121_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -205,7 +205,6 @@ namespace JupiterCapstone.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubCategoryId")
@@ -308,6 +307,9 @@ namespace JupiterCapstone.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ProfilePicture")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ResetPasswordToken")
                         .HasColumnType("nvarchar(max)");

@@ -326,7 +326,7 @@ namespace JupiterCapstone.Migrations
                     SupplierName = table.Column<string>(maxLength: 56, nullable: false),
                     ImageUrl = table.Column<string>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    Status = table.Column<string>(nullable: false),
+                    Status = table.Column<string>(nullable: true),
                     CreatedDateTime = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: false),
                     SubCategoryId = table.Column<string>(nullable: true)
@@ -339,7 +339,7 @@ namespace JupiterCapstone.Migrations
                         column: x => x.SubCategoryId,
                         principalTable: "SubCategories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

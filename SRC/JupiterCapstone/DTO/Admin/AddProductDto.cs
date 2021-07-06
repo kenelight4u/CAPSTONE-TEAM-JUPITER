@@ -12,7 +12,7 @@ namespace JupiterCapstone.DTO.Admin
         public double Quantity { get; set; }
         public decimal Price { get; set; }
         public string SupplierName { get; set; }
-        public string Status { get; set; }
+        //public string Status { get; set; }
         public string ImageUrl { get; set; }
         public string SubCategoryId { get; set; }
     }

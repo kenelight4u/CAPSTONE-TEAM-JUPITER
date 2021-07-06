@@ -16,6 +16,7 @@ namespace JupiterCapstone.Services
     public class ProductAccess : IProduct
     {
         private readonly ApplicationDbContext _context;
+
         public ProductAccess(ApplicationDbContext context)
         {
             _context = context;
@@ -42,7 +43,7 @@ namespace JupiterCapstone.Services
                         ProductName = product.ProductName,
                         Quantity = product.Quantity,
                         SupplierName = product.SupplierName,
-                        Status = product.Status,
+                       // Status = product.Status,
                         SubCategoryId=product.SubCategoryId,
                         ImageUrl=UploadImage(product.ImageUrl),
                         
@@ -63,7 +64,7 @@ namespace JupiterCapstone.Services
   
                 foreach (var product in productToDelete)
                 {
-                    var dbProduct = allProducts.FirstOrDefault(e => e.Id==product);
+                    var dbProduct = allProducts.FirstOrDefault(e => e.Id == product);
                     _context.Products.Remove(dbProduct);
                    
                 }
@@ -73,7 +74,7 @@ namespace JupiterCapstone.Services
 
         public async Task<IEnumerable<ViewProductDto>> GetAllProductsAsync()
         {
-            var products = await _context.Products.Where(e=>e.Quantity !=0).OrderBy(e=>e.CreatedDateTime).ToListAsync();
+            var products = await _context.Products.Where(e => e.Quantity != 0).OrderBy(e => e.CreatedDateTime ).ToListAsync();
 
             List<ViewProductDto> viewProduct = new List<ViewProductDto>();
 
@@ -88,7 +89,7 @@ namespace JupiterCapstone.Services
                     SupplierName = product.SupplierName,
                     Quantity = product.Quantity,
                     ProductName = product.ProductName,
-                    Status = product.Status,                
+                    Status = InStoreStatus(product.Id),                
                     ImageUrl=product.ImageUrl,
                     SubCategoryId=product.SubCategoryId
 
@@ -119,7 +120,7 @@ namespace JupiterCapstone.Services
                     dbProduct.ProductName = product.ProductName;
                     dbProduct.Quantity = product.Quantity;
                     //dbProduct.IsDeleted = product.IsDeleted;
-                    dbProduct.Status = product.Status;
+                   // dbProduct.Status = product.Status;
                     dbProduct.ImageUrl = UploadImage(product.ImageUrl);
 
                 }
@@ -161,7 +162,7 @@ namespace JupiterCapstone.Services
                                 SupplierName = aProduct.SupplierName,
                                 Quantity = aProduct.Quantity,
                                 ProductName = aProduct.ProductName,
-                                Status = aProduct.Status,
+                                Status = InStoreStatus(aProduct.Id),
                                 ImageUrl = aProduct.ImageUrl
                                
                                 //IsDeleted = aProduct.IsDeleted
@@ -200,7 +201,7 @@ namespace JupiterCapstone.Services
                         SupplierName = product.SupplierName,
                         Quantity = product.Quantity,
                         ProductName = product.ProductName,
-                        Status = product.Status,
+                        Status = InStoreStatus(product.Id),
                         ImageUrl = product.ImageUrl,
 
                     });
@@ -242,61 +243,28 @@ namespace JupiterCapstone.Services
 
             if (productDb.Quantity > 0)
             {
-                //I will need this in wishlist section
-                productDb.Status = "In Stock";
-                _context.SaveChanges();
                 return true;
             }
             else 
             {
-                productDb.Status = "Out of Stock";
-                _context.SaveChanges();
                 return false;
             } 
         }
         
-        //if youre adding from the available quantity to the cart, then db quantity should reduce a
+        //if you're adding from the available quantity to the cart, then db quantity should reduce
         public void DecreaseProductQuantity(string productId)
         {
-            var productDb = _context.Products.Where(e => e.Id == productId).FirstOrDefault().Quantity - 1;
+            var productDb = _context.Products.Where(e => e.Id == productId).FirstOrDefault();
+            productDb.Quantity--;
             _context.SaveChanges();
-          
-            //if (availableQuantity > 0)
-            //{
-            //    productDb.Quantity = availableQuantity;
-            //    productDb.Status = "In Stock";
-            //    _context.SaveChanges();
-            //    return true;
-            //}
-            //else 
-            //{
-            //    productDb.Quantity = 0;
-            //    productDb.Status = "out of Stock";
-            //    _context.SaveChanges();
-            //    return false; 
-            //}
            
         }
-        //if youre removing from the available quantity in the cart, then db quantity should increase
+        //if you're removing from the available quantity in the cart, then db quantity should increase
         public void IncreaseProductQuantity(string productId)
         {
-            var productDb = _context.Products.Where(e => e.Id == productId).FirstOrDefault().Quantity + 1;
+            var productDb = _context.Products.Where(e => e.Id == productId).FirstOrDefault();
+            productDb.Quantity++;
             _context.SaveChanges();
-
-            //if (availableQuantity > 0)
-            //{
-            //    productDb.Quantity = availableQuantity;
-            //    productDb.Status = "In Stock";
-            //    _context.SaveChanges();
-            //    return true;
-            //}
-            //else 
-            //{
-            //    productDb.Quantity = availableQuantity;
-            //    productDb.Status = "out of Stock";
-            //    _context.SaveChanges();
-            //    return false;
-            //}
 
         }
        
