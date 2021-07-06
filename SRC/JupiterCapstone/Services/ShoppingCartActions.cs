@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Services
 {
-    public class ShoppingCartActions
+    public class ShoppingCartActions : ICart
     {
         private readonly ApplicationDbContext _context;
 
@@ -18,7 +18,7 @@ namespace JupiterCapstone.Services
             _context = context;
         }
 
-        public void AddToCart(string productId, string userId)
+        public bool AddToCart(string productId, string userId)
         {
             // Retrieve the product from the database.           
             var cartItem = _context.ShoppingCartItems.SingleOrDefault(c => c.UserId == userId && c.ProductId == productId);
@@ -37,6 +37,8 @@ namespace JupiterCapstone.Services
                 };
 
                 _context.ShoppingCartItems.Add(cartItem);
+                
+
             }
             else
             {
@@ -44,7 +46,12 @@ namespace JupiterCapstone.Services
                 // then add one to the quantity.                 
                 cartItem.Quantity++;
             }
-            _context.SaveChanges();
+            int bit = _context.SaveChanges();
+            if (bit > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         public List<CartItem> GetCartItems(string userId)
@@ -63,7 +70,7 @@ namespace JupiterCapstone.Services
             return total;
         }
 
-        public void RemoveItem(string removeCartID, string removeProductID)
+        public bool RemoveItem(string removeCartID, string removeProductID)
         {
             
             try
@@ -74,7 +81,11 @@ namespace JupiterCapstone.Services
                     // Remove Item.
                     _context.ShoppingCartItems.Remove(myItem);
                     _context.SaveChanges();
+                    
+                    return true;
+
                 }
+                return false;
             }
             catch (Exception exp)
             {
@@ -83,18 +94,31 @@ namespace JupiterCapstone.Services
             
         }
 
-        public void EmptyCart(string userId)
+        public bool EmptyCart(string userId)
         {
 
-            var cartItems = _context.ShoppingCartItems.Where(
-                c => c.UserId == userId);
-            foreach (var cartItem in cartItems)
+            try
             {
-                _context.ShoppingCartItems.Remove(cartItem);
+                var cartItems = _context.ShoppingCartItems.Where(
+                             c => c.UserId == userId);
+                if (cartItems.Count()>0)
+                {
+                    foreach (var cartItem in cartItems)
+                    {
+                        _context.ShoppingCartItems.Remove(cartItem);
+                    }
+                    // Save changes.             
+                    _context.SaveChanges();
+                    return true;
+                }
+                return false;
+          
             }
-           
-            // Save changes.             
-            _context.SaveChanges();
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }
