@@ -1,5 +1,5 @@
-﻿using JupiterCapstone.Services.IService;
-using Microsoft.AspNetCore.Http;
+﻿using JupiterCapstone.DTO.UserDTO;
+using JupiterCapstone.Services.IService;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -8,104 +8,91 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Controllers
 {
-    [Route("api/v1/Cart")]
     [ApiController]
+    [Route("Cart")]
     public class CartController : Controller
     {
-        private readonly ICart _cart;
-        private readonly IHttpContextAccessor _httpContext;
-        private readonly IUrlHelper _urlHelper;
-
-        public CartController(ICart cart, IHttpContextAccessor httpContext, IUrlHelper urlHelper)
+        private readonly IShoppingCartActions _repository;
+        private readonly IProduct _productAccess;
+        public CartController(IShoppingCartActions repository, IProduct product )
         {
-            _cart = cart;
-            _httpContext = httpContext;
-            _urlHelper = urlHelper;
-        }
-       
-
-        [HttpDelete("Remove-CartItem/{CartItemId}/{ProductId}")]
-        public async Task<IActionResult> RemoveItem(string CartItemId, string ProductId)
-        {
-            try
-            {
-                var response = await Task.Run(() => _cart.RemoveItem(CartItemId,ProductId));
-                if (response != true)
-                {
-                    return NotFound("Item not found");
-                }
-                if (response == true)
-                {
-                    return Ok(true);
-                }
-                return BadRequest("Invalid request");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpDelete("EmptyCart/{UserId}")]
-        public async Task<IActionResult> EmptyCart(string UserId)
-        {
-            try
-            {
-                var response = await Task.Run(() => _cart.EmptyCart(UserId));
-                if (response != true)
-                {
-                    return NotFound(" Cart not empty");
-                }
-                if (response == true)
-                {
-                    return Ok(true);
-                }
-                return BadRequest("Invalid request");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-
-        [HttpGet]
-        [Route("{userId}", Name = "GetByUserId")]
-        public async Task<IActionResult> GetByUserId(string userId)
-        {
-            try
-            {
-                var user = await Task.Run(() => _cart.GetCartItems(userId));
-                return Ok(user);
-            }
-            catch (Exception)
-            {
-                return NotFound("The response could not be found.");
-            }
+            _repository = repository;
+            _productAccess = product;
         }
 
         [HttpPost]
-        [Route("")]
-        public async Task<IActionResult> AddToCart([FromBody] string productId, string userId)
+        [Route("add-to-cart")]
+        public async Task<IActionResult> AddToCart([FromBody] AddCartItemDto cartItem)
         {
-            try
+            var checkquantity = _productAccess.CheckQuantityOfProducts(cartItem.ProductId);
+
+            if (!checkquantity)
             {
-                if (!string.IsNullOrEmpty(productId) && !string.IsNullOrEmpty(userId))
-                {
-                    var result = await Task.Run(() => _cart.AddToCart(productId,userId));
-                    if (result == true)
-                    {
-                        return Ok(result);
-                    }
-                    return BadRequest("An error occured");
-                }
-                string errors = string.Join(";", ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage));
-                return BadRequest(errors);
+                return BadRequest(new { message = "Product out of stock" });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            var response = await _repository.AddToCartAsync(cartItem.ProductId, cartItem.UserId);
+
+            if (!response) { return BadRequest(new { message = "Product couldn't be added to Shopping Cart" }); }
+            return Ok(new {message= "Item Added to Cart" });
         }
+
+        [HttpGet]
+        [Route("get-cart-items")]
+        public async Task<IActionResult> GetCartItems([FromQuery]string userId)
+        {
+            var cartItems = await _repository.GetCartItemsAsync(userId);
+            if (cartItems==null)
+            {
+                return NotFound();
+
+            }
+            return Ok(cartItems);
+        }
+
+        [HttpDelete]
+        [Route("remove-cart-item")]
+        public async Task<IActionResult> RemoveItemFromCart([FromQuery] string itemId)
+        {
+            await _repository.RemoveItemFromCartAsync(itemId);
+            return NoContent();
+        }
+
+        [HttpGet]
+        [Route("get-cart-total")]
+        public async Task<IActionResult> GetCartTotal([FromQuery] string UserId)
+        {
+            var cartTotal =await _repository.GetCartTotalAsync(UserId);
+            return Ok(new { message = cartTotal }); 
+        }
+
+        [HttpDelete]
+        [Route("empty-cart")]
+        public async Task<IActionResult> EmptyCart([FromQuery] string userId)
+        {
+            await _repository.EmptyCartAsync(userId);
+            return NoContent();
+        }
+
+        [HttpPut]
+        [Route("reduce-item-quantity")]
+        public async Task<IActionResult> EditCartItemQuantity([FromBody]EditCartItemDto editCartItem)
+        {
+
+           /* var checkquantity = _productAccess.CheckQuantityOfProducts(editCartItem.ProductId);
+            if (!checkquantity)
+            {
+                return BadRequest(new { message = "Product out of stock" });
+            }*/
+           
+            //why passing quantity again where you have the itemId 
+            var response = await _repository.EditItemQuantityInCartAsync(editCartItem);
+
+            if (!response)
+            {
+                return BadRequest(new { message="Quantity of Product cannot be lesser than 1" });
+            }
+            return NoContent();
+        }
+
     }
 }

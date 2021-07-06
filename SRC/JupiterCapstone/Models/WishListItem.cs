@@ -20,17 +20,7 @@ namespace JupiterCapstone.Models
         public string UserId { get; set; }
 
         public DateTime DateCreated { get; set; }
-        //public virtual WishList WishList  { get; set; }
-        //public string WishListId { get; set; }  
-
-
-
-
-
-
-
-
-
+       
 
     }
 }

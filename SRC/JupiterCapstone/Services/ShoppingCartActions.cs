@@ -1,7 +1,9 @@
 ﻿using JupiterCapstone.Data;
+using JupiterCapstone.DTO.UserDTO;
 using JupiterCapstone.Models;
 using JupiterCapstone.Services.IService;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +11,33 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Services
 {
-    public class ShoppingCartActions : ICart
+    public class ShoppingCartActions : IShoppingCartActions
     {
         private readonly ApplicationDbContext _context;
 
-        public ShoppingCartActions(ApplicationDbContext context)
+        private readonly IProduct _productAccess; 
+
+        public ShoppingCartActions(ApplicationDbContext context, IProduct productAccess)
         {
             _context = context;
+            _productAccess = productAccess;
+
         }
 
-        public bool AddToCart(string productId, string userId)
+        public async Task<bool> AddToCartAsync(string productId, string userId)
         {
+            var checkProduct = await _context.Products.FirstOrDefaultAsync(e => e.Id == productId && e.Quantity != 0 );
+            if (checkProduct == null)
+            {
+                return false;
+            }
+            var checkUser = await _context.Users.FirstOrDefaultAsync(e => e.Id == userId);
+            if (checkUser == null)
+            {
+                return false;
+            }
             // Retrieve the product from the database.           
-            var cartItem = _context.ShoppingCartItems.SingleOrDefault(c => c.UserId == userId && c.ProductId == productId);
+            var cartItem = await _context.ShoppingCartItems.SingleOrDefaultAsync(c => c.UserId == userId && c.ProductId == productId);
 
             if (cartItem == null)
             {
@@ -31,94 +47,103 @@ namespace JupiterCapstone.Services
                     ItemId = Guid.NewGuid().ToString(),
                     ProductId = productId,
                     UserId = userId,
-                    Product = _context.Products.SingleOrDefault(p => p.Id == productId && p.Quantity != 0),
                     Quantity = 1,
                     DateCreated = DateTime.Now
                 };
-
-                _context.ShoppingCartItems.Add(cartItem);
                 
+               await _context.ShoppingCartItems.AddAsync(cartItem);
+                _productAccess.DecreaseProductQuantity(productId);
 
             }
             else
             {
                 // If the item does exist in the cart,                  
-                // then add one to the quantity.                 
+                // then add one to the quantity.
                 cartItem.Quantity++;
+                _productAccess.DecreaseProductQuantity(productId);
             }
-            int bit = _context.SaveChanges();
-            if (bit > 0)
-            {
-                return true;
-            }
-            return false;
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public List<CartItem> GetCartItems(string userId)
+        public async Task<IEnumerable<ViewCartItemDto>> GetCartItemsAsync(string userId)
         {
+            var userCartItems = await _context.ShoppingCartItems.Where(e => e.UserId == userId).ToListAsync();
+            if (userCartItems.Count==0)
+            {
+                return null;
+            }
+            List<ViewCartItemDto> cartDto = new List<ViewCartItemDto>();
+            foreach (var userCartItem in userCartItems)
+            {
+                var productCartItem = await _context.Products.FirstOrDefaultAsync(e => e.Id == userCartItem.ProductId);
+                cartDto.Add(new ViewCartItemDto
+                {
+                    ItemId=userCartItem.ItemId,
+                    ProductId=userCartItem.ProductId,
+                    Quantity=userCartItem.Quantity,
+                    ProductName= productCartItem.ProductName,
+                    ProductImage= productCartItem.ImageUrl,
+                    ProductDescription= productCartItem.Description,
+                    Status = _productAccess.InStoreStatus(userCartItem.ProductId),
+                    ProductUnitPrice= productCartItem.Price,
+                    SupplierName= productCartItem.SupplierName,
+
+                });
+            }
             
-            return _context.ShoppingCartItems.Where( c => c.UserId == userId).ToList();
+            return cartDto;
         }
 
-        public decimal GetCartTotal(string userId)
+        public async Task<decimal> GetCartTotalAsync(string userId)
         {
             // Multiply product price by quantity of that product to get        
             // the current price for each of those products in the cart.  
             // Sum all product price totals to get the cart total. 
-            decimal total = _context.ShoppingCartItems.Where(x => x.UserId == userId).Sum(x => x.Quantity * x.Product.Price);
-            
+            decimal total =await  _context.ShoppingCartItems.Where(x => x.UserId == userId).SumAsync(x => x.Quantity * x.Product.Price);
             return total;
         }
 
-        public bool RemoveItem(string removeCartID, string removeProductID)
-        {
-            
-            try
+        public async Task RemoveItemFromCartAsync(string cartItemID)
+        {   
+            var userItem = await _context.ShoppingCartItems.Where(e => e.ItemId == cartItemID).FirstOrDefaultAsync();
+            if (userItem != null)
             {
-                var myItem = (from c in _context.ShoppingCartItems where c.UserId == removeCartID && c.Product.Id == removeProductID select c).FirstOrDefault();
-                if (myItem != null)
-                {
-                    // Remove Item.
-                    _context.ShoppingCartItems.Remove(myItem);
-                    _context.SaveChanges();
-                    
-                    return true;
-
-                }
-                return false;
-            }
-            catch (Exception exp)
-            {
-                throw new Exception("ERROR: Unable to Remove Cart Item - " + exp.Message.ToString(), exp);
-            }
+                _context.ShoppingCartItems.Remove(userItem);
+                await _context.SaveChangesAsync();
+            }  
             
         }
 
-        public bool EmptyCart(string userId)
+        public async Task EmptyCartAsync(string userId)
         {
+            var cartItems = await _context.ShoppingCartItems.Where(c => c.UserId == userId).ToListAsync();
 
-            try
+            foreach (var cartItem in cartItems)
             {
-                var cartItems = _context.ShoppingCartItems.Where(
-                             c => c.UserId == userId);
-                if (cartItems.Count()>0)
-                {
-                    foreach (var cartItem in cartItems)
-                    {
-                        _context.ShoppingCartItems.Remove(cartItem);
-                    }
-                    // Save changes.             
-                    _context.SaveChanges();
-                    return true;
-                }
+                _context.ShoppingCartItems.Remove(cartItem);
+            }            
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> EditItemQuantityInCartAsync(EditCartItemDto editCartItem)
+        {
+            var cartItem = await _context.ShoppingCartItems.Where(e => e.ItemId == editCartItem.ItemId ).FirstOrDefaultAsync();
+            cartItem.Quantity--;
+
+            _productAccess.IncreaseProductQuantity(cartItem.ProductId);
+
+            //var productAccess = _productAccess.AddItemToProductQuantity(cartItem.ProductId);
+            //var availableQuantityAfterEdit = cartItem.Quantity - editCartItem.Quantity;
+
+            //cartItem.Quantity = availableQuantityAfterEdit;
+            if (cartItem.Quantity <= 0 )
+            {
                 return false;
-          
             }
-            catch (Exception)
-            {
 
-                throw;
-            }
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

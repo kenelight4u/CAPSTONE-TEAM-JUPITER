@@ -1,6 +1,6 @@
 ﻿using JupiterCapstone.Data;
-using JupiterCapstone.Dtos.Admin;
-using JupiterCapstone.Dtos.User;
+using JupiterCapstone.DTO.Admin;
+using JupiterCapstone.DTO.UserDTO;
 using JupiterCapstone.Models;
 using JupiterCapstone.Services.IService;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +32,11 @@ namespace JupiterCapstone.Services
             {
                 foreach (var subCategoriesToAdd in subCategories)
                 {
+                    var checkcategory = await _context.SubCategories.FirstOrDefaultAsync(e => e.SubCategoryName == subCategoriesToAdd.SubCategoryName);
+                    if (checkcategory != null)
+                    {
+                        return false;
+                    }
 
                     SubCategory subCategoryDb = new SubCategory()
                     {
@@ -55,7 +60,6 @@ namespace JupiterCapstone.Services
             {
                 var dbSubCategory = allSubCategories.FirstOrDefault(e => e.Id == subcategory);
                 _context.SubCategories.Remove(dbSubCategory);
-
 
             }
             await SaveChangesAsync();

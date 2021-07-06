@@ -51,17 +51,21 @@ namespace JupiterCapstone
             var appSettingsSection = Configuration.GetSection("TokenConfiguration");
             services.Configure<TokenConfiguration>(appSettingsSection);
 
+            // configure strongly typed settings objects sms
+            var appSmsSetting = Configuration.GetSection("SmsConfiguration");
+            services.Configure<SmsConfiguration>(appSmsSetting);
+
             services.AddScoped<IIdentityService, IdentityService>();
-          
+            services.AddScoped<IShippingAddressService, ShippingAddressService>();
             services.AddScoped<IGoogleIdentity, GoogleIdentity>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICategory, CategoryAccess>();
             services.AddScoped<ISubCategory, SubCategoryAccess>();
             services.AddScoped<IProduct, ProductAccess>();
-            //services.AddScoped<ICart, CartAccess>();
+            services.AddScoped<IShoppingCartActions, ShoppingCartActions>();
             services.AddScoped<IOrder, OrderAccess>();
             services.AddScoped<IPayment, PaymentAccess>();
-           // services.AddScoped<IWishList, WishListActions>();
+            services.AddScoped<IWishListActions, WishListActions>();
 
             services.AddControllers().AddNewtonsoftJson(s =>
             {
@@ -71,8 +75,9 @@ namespace JupiterCapstone
             //registering Send Grid 
             services.AddTransient<IMailService, SendGridMailService>();
            
-            // services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+             //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddAutoMapper(typeof(UsersProfile));
+            services.AddAutoMapper(typeof(ShippingAddressProfile));
 
             // For Identity  
             services.AddIdentity<User, IdentityRole>()
@@ -86,18 +91,13 @@ namespace JupiterCapstone
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(JwtSecretkey),
-                ValidateIssuer = false,
-                ValidateAudience = false,
+                ValidIssuer = Configuration["TokenConfiguration:JwtSettings:ValidIssuer"],
+                ValidAudience= Configuration["TokenConfiguration:JwtSettings:ValidAudience"],
+                ValidateIssuer = true,
+                ValidateAudience = true,
                 RequireExpirationTime = false,
                 ValidateLifetime = true
             };
-
-            /*var applicationSettings = Configuration.GetSection("AddSettings");
-            services.Configure<ApplicationSettings>(applicationSettings);
-
-            var appSettingsSecretKey = applicationSettings.Get<ApplicationSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettingsSecretKey.JWT_Secret);*/
-
 
             services.AddSingleton(tokenValidationParameters);
             services.AddAuthentication(x =>
@@ -115,15 +115,15 @@ namespace JupiterCapstone
 
             });
 
+            //password tightening up
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 8; 
+            });
+
             services.AddControllers();
             services.AddMvc();
             services.AddSwaggerGen();
-
-            /* services.AddSwaggerGen(c =>
-             {
-                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ADUABA API", Version = "v1" });
-
-             });*/
 
             services.AddSwaggerGen(config =>
             {
@@ -149,7 +149,7 @@ namespace JupiterCapstone
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ADUABA API V1");
-              //  c.RoutePrefix = string.Empty;
+                //c.RoutePrefix = string.Empty;
             });
 
             app.UseHttpsRedirection();

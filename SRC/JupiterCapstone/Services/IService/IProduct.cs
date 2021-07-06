@@ -1,5 +1,5 @@
-﻿using JupiterCapstone.Dtos.Admin;
-using JupiterCapstone.Dtos.User;
+﻿using JupiterCapstone.DTO.Admin;
+using JupiterCapstone.DTO.UserDTO;
 using JupiterCapstone.Models;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,14 @@ namespace JupiterCapstone.Services.IService
         Task DeleteProductAsync(List<string>productToDelete);
         Task<IEnumerable<ViewProductDto>> GetProductsByNameAsync(List<string>products);
         Task<IEnumerable<ViewProductDto>> GetProductsBySubCategoryIdAsync(string subCategoryId);
-       
+
+        bool CheckQuantityOfProducts(string productId);
+        void DecreaseProductQuantity(string productId);
+        void IncreaseProductQuantity(string productId);
+
+        string InStoreStatus(string productId);
+
+
 
     }
 }

@@ -19,30 +19,30 @@ namespace JupiterCapstone.Services.GoogleServices
             _userManager = userManager;           
         }
 
-        public async Task<User> GetOrCreateExternalLoginUser(GoogleLoginRequest googleModel)
+        public async Task<User> GetOrCreateExternalLoginUser(string provider, string key, string email, string firstName, string lastName)
         {
             // Login already linked to a user
-            var user = await _userManager.FindByLoginAsync(googleModel.Provider, googleModel.Key);
+            var user = await _userManager.FindByLoginAsync(provider, key);
             if (user != null)
                 return user;
 
-            user = await _userManager.FindByEmailAsync(googleModel.Email);
+            user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
                 // No user exists with this email address, we create a new one
                 user = new User
                 {
-                    Email = googleModel.Email,
-                    UserName = googleModel.Email,
-                    FirstName = googleModel.FirstName,
-                    LastName = googleModel.LastName
+                    Email = email,
+                    UserName = email,
+                    FirstName = firstName,
+                    LastName = lastName
                 };
 
                 await _userManager.CreateAsync(user);
             }
 
             // Link the user to this login
-            var info = new UserLoginInfo(googleModel.Provider, googleModel.Key, googleModel.Provider.ToUpperInvariant());
+            var info = new UserLoginInfo(provider, key, provider.ToUpperInvariant());
             var result = await _userManager.AddLoginAsync(user, info);
             if (result.Succeeded)
                 return user;

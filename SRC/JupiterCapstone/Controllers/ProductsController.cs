@@ -1,5 +1,5 @@
-﻿using JupiterCapstone.Dtos.Admin;
-using JupiterCapstone.Dtos.User;
+﻿using JupiterCapstone.DTO.Admin;
+using JupiterCapstone.DTO.UserDTO;
 using JupiterCapstone.Services.IService;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,7 +20,7 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpGet]
-        [Route("subcategoryid")]
+        [Route("get-products-bysubcategoryid")]
         public async Task<IActionResult> GetProductsBySubCategoryId([FromQuery] string subcategoryId)
         {
             if (subcategoryId == null)
@@ -34,7 +34,9 @@ namespace JupiterCapstone.Controllers
             }
             return Ok(products);
         }
-        /*[HttpGet]
+
+        [HttpGet]
+        [Route("get-all-products")]
         public async Task<IActionResult> GetAllProducts()
         {
             var allProducts = await _repository.GetAllProductsAsync();
@@ -44,10 +46,10 @@ namespace JupiterCapstone.Controllers
             }
 
             return Ok(allProducts);
-        }*/
+        }
 
         [HttpPost]
-        [Route("add")]
+        [Route("add-products")]
         public async Task<IActionResult> AddProducts([FromBody] List<AddProductDto> addProduct)
         {
             var reponse= await _repository.AddProductAsync(addProduct);
@@ -60,7 +62,7 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpPut]
-        [Route("update")]
+        [Route("update-products")]
         public async Task<IActionResult> UpdateProducts([FromBody] List<UpdateProductDto> productToUpdate)
         {
             var response=await _repository.UpdateProductAsync(productToUpdate);
@@ -71,9 +73,8 @@ namespace JupiterCapstone.Controllers
             return NoContent();
         }
 
-
         [HttpDelete]
-        [Route("delete")]
+        [Route("delete-products")]
         public async Task<IActionResult> DeleteProducts([FromBody]List<string>productsToDelete)
         {
             if (productsToDelete.Count==0) 
@@ -85,7 +86,7 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpPost]
-        [Route("search")]
+        [Route("search-for-products-byname")]
         public async Task <IActionResult> GetProductsByName([FromBody] List<string> productsName)
         {
             if (productsName.Count==0)

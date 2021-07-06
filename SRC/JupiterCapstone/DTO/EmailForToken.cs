@@ -9,4 +9,5 @@ namespace JupiterCapstone.DTO
     {
         public string Email { get; set; }
     }
+
 }

@@ -11,7 +11,6 @@ namespace JupiterCapstone.Models
         public Category()
         {
             SubCategories = new HashSet<SubCategory>();
-
         }
         [Key]
         public string Id { get; set; }

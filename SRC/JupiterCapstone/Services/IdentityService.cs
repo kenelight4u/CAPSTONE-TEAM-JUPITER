@@ -123,6 +123,8 @@ namespace JupiterCapstone.Services
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = Subject,
+                    Issuer =_appSettings.JwtSettings.ValidIssuer,
+                    Audience= _appSettings.JwtSettings.ValidAudience,
                     Expires = DateTime.UtcNow.Add(_appSettings.JwtSettings.TokenLifetime),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };

@@ -16,8 +16,6 @@ using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace JupiterCapstone.Controllers
 {
-
-    //[Route("api/[controller]")]
     
     [ApiController]
     public class AuthenticationController : ControllerBase
@@ -39,7 +37,7 @@ namespace JupiterCapstone.Controllers
         }
         
         [HttpPost]
-        [Route("/login")]
+        [Route("/logIn")]
         public async Task<IActionResult> LoginAsync([FromBody] LogIn login)
         {
             var result = await _identityService.LoginAsync(login);
@@ -47,7 +45,7 @@ namespace JupiterCapstone.Controllers
         }
         
         [HttpPost]
-        [Route("/refresh")]
+        [Route("/refresh-token")]
         public async Task<IActionResult> Refresh([FromBody] TokenModel request)
         {
             var result = await _identityService.RefreshTokenAsync(request);
@@ -56,7 +54,7 @@ namespace JupiterCapstone.Controllers
 
         //Remember to shorten the code to a service class
         [HttpPost]
-        [Route("/register")]
+        [Route("/register-user")]
         public async Task<IActionResult> RegisterAsync([FromBody] Register model)
         {
             var emailExists = await _userManager.FindByEmailAsync(model.Email);
@@ -118,37 +116,33 @@ namespace JupiterCapstone.Controllers
         [HttpPost]
         [Route("/google-signIn")]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> GoogleLogin(GoogleLoginRequest request)
+        public async Task<JsonResult> GoogleLogin(GoogleLoginRequest request)
         {
-            Payload payload = new Payload();
+            _ = new Payload();
+            Payload payload;
             try
             {
                 payload = await ValidateAsync(request.IdToken, new ValidationSettings
                 {
-                    Audience = new[] { "646800471761-dtbu1l4n08qmeb7lbus8lvjvhjfe8a66.apps.googleusercontent.com" }
+                    Audience = new[] { "806516260930-fav0u51tnpsfdrn6vamfb9gi9fidvilh.apps.googleusercontent.com" }
                 });
                 // It is important to add your ClientId as an audience in order to make sure
                 // that the token is for your application!
             }
-            catch
+            catch (Exception ex)
             {
                 // Invalid token
+                // return StatusCode(500, ex.Message);
+                return new JsonResult(500, ex.Message);
             }
 
-            var googleUser = new GoogleLoginRequest()
-            {
-                Provider = "google",
-                Key = payload.Subject,
-                Email = payload.Email,
-                FirstName = payload.GivenName,
-                LastName = payload.FamilyName
-            };
-
-            var user = await _googleIdentity.GetOrCreateExternalLoginUser(googleUser);
+            var user = await _googleIdentity.GetOrCreateExternalLoginUser("google", payload.Subject, payload.Email, payload.GivenName, payload.FamilyName);
 
             var token = await _identityService.GenerateToken(user);
 
-            return Ok(token);
+            return new JsonResult(token);
+
+           
         }
     }
 }
