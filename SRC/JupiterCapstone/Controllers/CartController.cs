@@ -25,11 +25,13 @@ namespace JupiterCapstone.Controllers
         public async Task<IActionResult> AddToCart([FromBody] AddCartItemDto cartItem)
         {
             var checkquantity = _productAccess.CheckQuantityOfProducts(cartItem.ProductId);
+
             if (!checkquantity)
             {
                 return BadRequest(new { message = "Product out of stock" });
             }
-            var response =await _repository.AddToCartAsync(cartItem.ProductId, cartItem.UserId);
+            var response = await _repository.AddToCartAsync(cartItem.ProductId, cartItem.UserId);
+
             if (!response) { return BadRequest(new { message = "Product couldn't be added to Shopping Cart" }); }
             return Ok(new {message= "Item Added to Cart" });
         }
@@ -72,15 +74,19 @@ namespace JupiterCapstone.Controllers
         }
 
         [HttpPut]
-        [Route("edit-item-quantity")]
+        [Route("reduce-item-quantity")]
         public async Task<IActionResult> EditCartItemQuantity([FromBody]EditCartItemDto editCartItem)
         {
+
            /* var checkquantity = _productAccess.CheckQuantityOfProducts(editCartItem.ProductId);
             if (!checkquantity)
             {
                 return BadRequest(new { message = "Product out of stock" });
             }*/
-            var response=await _repository.EditItemQuantityInCartAsync(editCartItem);
+           
+            //why passing quantity again where you have the itemId 
+            var response = await _repository.EditItemQuantityInCartAsync(editCartItem);
+
             if (!response)
             {
                 return BadRequest(new { message="Quantity of Product cannot be lesser than 1" });

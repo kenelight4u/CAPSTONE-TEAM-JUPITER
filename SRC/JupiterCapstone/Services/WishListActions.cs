@@ -24,7 +24,7 @@ namespace JupiterCapstone.Services
 
         public async Task<bool> AddToWishListAsync(List<AddWishListItemDto> wishListItem)
         {
-            if (wishListItem.Count==0)
+            if (wishListItem.Count == 0)
             {
                 return false;
             }
@@ -32,8 +32,8 @@ namespace JupiterCapstone.Services
             foreach (var itemtoAdd in wishListItem)
             {
 
-                var checkforItem = await _context.WishListItems.FirstOrDefaultAsync(e=>e.ProductId==itemtoAdd.ProductId && e.UserId==itemtoAdd.UserId);
-                if (checkforItem==null)
+                var checkforItem = await _context.WishListItems.FirstOrDefaultAsync( e => e.ProductId == itemtoAdd.ProductId && e.UserId == itemtoAdd.UserId);
+                if (checkforItem == null)
                 {
                     WishListItem newwishItem = new WishListItem
                     {
@@ -46,7 +46,7 @@ namespace JupiterCapstone.Services
                     await _context.SaveChangesAsync();
 
                 }
-                else if (checkforItem.ProductId==itemtoAdd.ProductId)
+                else if (checkforItem.ProductId == itemtoAdd.ProductId)
                 {
                     return false;
                 }
@@ -59,11 +59,14 @@ namespace JupiterCapstone.Services
         public async Task<IEnumerable<ViewWishListItemDto>> GetWishListItemsAsync(string userId)
         {
             var userWishLists = await  _context.WishListItems.Where(e => e.UserId == userId).ToListAsync();
-            if (userWishLists.Count==0)
+
+            if (userWishLists.Count == 0)
             {
                 return null;
             }
+
             List<ViewWishListItemDto> wishListDto = new List<ViewWishListItemDto>();
+
             foreach (var wishList in userWishLists)
             {
                 var getproduct = await _context.Products.Where(e => e.Id == wishList.ProductId).ToListAsync();                              
@@ -78,16 +81,14 @@ namespace JupiterCapstone.Services
                         SupplierName = item.SupplierName,
                         Quantity = item.Quantity,
                         ProductName = item.ProductName,
-                        Status = item.Status,
+                        Status = _product.InStoreStatus(item.Id),
                         ProductImage = item.ImageUrl,
                     });
 
                 }              
                
             }
-
             return wishListDto;
-
         }
 
         public async Task RemoveWishListAsync(string userId, List<string> removeItemId)
@@ -95,7 +96,7 @@ namespace JupiterCapstone.Services
             var userWishList = await _context.WishListItems.Where(e => e.UserId == userId).ToListAsync();
             foreach (var itemToDelete in removeItemId)
             {
-                var wishListToDelete =  userWishList.FirstOrDefault(e => e.ItemId ==itemToDelete);
+                var wishListToDelete =  userWishList.FirstOrDefault(e => e.ItemId == itemToDelete);
                 _context.WishListItems.Remove(wishListToDelete);
                 await _context.SaveChangesAsync();
 

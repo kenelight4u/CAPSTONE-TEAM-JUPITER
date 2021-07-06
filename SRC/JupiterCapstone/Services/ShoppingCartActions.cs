@@ -14,6 +14,7 @@ namespace JupiterCapstone.Services
     public class ShoppingCartActions : IShoppingCartActions
     {
         private readonly ApplicationDbContext _context;
+
         private readonly IProduct _productAccess; 
 
         public ShoppingCartActions(ApplicationDbContext context, IProduct productAccess)
@@ -25,13 +26,13 @@ namespace JupiterCapstone.Services
 
         public async Task<bool> AddToCartAsync(string productId, string userId)
         {
-            var checkProduct = await _context.Products.FirstOrDefaultAsync(e => e.Id == productId && e.Quantity !=0);
-            if (checkProduct==null)
+            var checkProduct = await _context.Products.FirstOrDefaultAsync(e => e.Id == productId && e.Quantity != 0 );
+            if (checkProduct == null)
             {
                 return false;
             }
             var checkUser = await _context.Users.FirstOrDefaultAsync(e => e.Id == userId);
-            if (checkUser==null)
+            if (checkUser == null)
             {
                 return false;
             }
@@ -51,20 +52,15 @@ namespace JupiterCapstone.Services
                 };
                 
                await _context.ShoppingCartItems.AddAsync(cartItem);
-                _productAccess.ReduceFromProductQuantity(productId);
+                _productAccess.DecreaseProductQuantity(productId);
 
             }
             else
             {
-                var response = _productAccess.ReduceFromProductQuantity(productId);
-                if (!response)
-                {
-                    return false;
-
-                }
                 // If the item does exist in the cart,                  
                 // then add one to the quantity.
                 cartItem.Quantity++;
+                _productAccess.DecreaseProductQuantity(productId);
             }
             await _context.SaveChangesAsync();
             return true;
@@ -89,7 +85,7 @@ namespace JupiterCapstone.Services
                     ProductName= productCartItem.ProductName,
                     ProductImage= productCartItem.ImageUrl,
                     ProductDescription= productCartItem.Description,
-                    Status= productCartItem.Status,
+                    Status = _productAccess.InStoreStatus(userCartItem.ProductId),
                     ProductUnitPrice= productCartItem.Price,
                     SupplierName= productCartItem.SupplierName,
 
@@ -129,14 +125,19 @@ namespace JupiterCapstone.Services
             }            
             await _context.SaveChangesAsync();
         }
+
         public async Task<bool> EditItemQuantityInCartAsync(EditCartItemDto editCartItem)
         {
-            var cartItem = await _context.ShoppingCartItems.Where(e=>e.ItemId==editCartItem.ItemId).FirstOrDefaultAsync();
-            //var productAccess = _productAccess.AddItemToProductQuantity(cartItem.ProductId);
-            var availableQuantityAfterEdit = cartItem.Quantity - editCartItem.Quantity;
+            var cartItem = await _context.ShoppingCartItems.Where(e => e.ItemId == editCartItem.ItemId ).FirstOrDefaultAsync();
+            cartItem.Quantity--;
 
-            cartItem.Quantity = availableQuantityAfterEdit;
-            if (cartItem.Quantity<0 )
+            _productAccess.IncreaseProductQuantity(cartItem.ProductId);
+
+            //var productAccess = _productAccess.AddItemToProductQuantity(cartItem.ProductId);
+            //var availableQuantityAfterEdit = cartItem.Quantity - editCartItem.Quantity;
+
+            //cartItem.Quantity = availableQuantityAfterEdit;
+            if (cartItem.Quantity <= 0 )
             {
                 return false;
             }

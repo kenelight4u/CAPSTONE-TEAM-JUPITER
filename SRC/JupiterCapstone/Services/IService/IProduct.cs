@@ -18,8 +18,10 @@ namespace JupiterCapstone.Services.IService
         Task<IEnumerable<ViewProductDto>> GetProductsBySubCategoryIdAsync(string subCategoryId);
 
         bool CheckQuantityOfProducts(string productId);
-        bool ReduceFromProductQuantity(string productId);
-        bool AddItemToProductQuantity(String productId);
+        void DecreaseProductQuantity(string productId);
+        void IncreaseProductQuantity(string productId);
+
+        string InStoreStatus(string productId);
 
 
 

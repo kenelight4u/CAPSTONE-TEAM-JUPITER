@@ -24,7 +24,7 @@ namespace JupiterCapstone.Services
 
         public async Task<bool> AddProductAsync(List<AddProductDto> productsDto)
         {
-            if (productsDto.Count==0)
+            if (productsDto.Count == 0)
             {
                 return false;
 
@@ -47,6 +47,7 @@ namespace JupiterCapstone.Services
                         ImageUrl=UploadImage(product.ImageUrl),
                         
                     };
+
                    await _context.Products.AddAsync(productdb);
                 }
                
@@ -180,7 +181,7 @@ namespace JupiterCapstone.Services
         public async Task<IEnumerable<ViewProductDto>> GetProductsBySubCategoryIdAsync(string subCategoryId)
         {
             var products = await _context.Products.Where(e => e.SubCategoryId == subCategoryId && e.Quantity != 0)
-                .OrderBy(p=>p.CreatedDateTime).ToListAsync();
+                .OrderBy(p => p.CreatedDateTime).ToListAsync();
             if (products.Count == 0)
             {
                 return null;
@@ -215,11 +216,33 @@ namespace JupiterCapstone.Services
             await _context.SaveChangesAsync();
         }
 
+        public string InStoreStatus(string productId)
+        {
+            var productDb = _context.Products.Where(e => e.Id == productId).FirstOrDefault();
+
+            if (productDb.Quantity > 0)
+            {
+                //I will need this in wishlist section
+                productDb.Status = "In Stock";
+
+                return productDb.Status;
+                
+            }
+            else
+            {
+                productDb.Status = "Out of Stock";
+
+                return productDb.Status;
+            }
+        }
+
         public bool CheckQuantityOfProducts(string productId)
         {
-            var productDb = _context.Products.Where(e=>e.Id==productId).FirstOrDefault();
-            if (productDb.Quantity!=0)
+            var productDb = _context.Products.Where(e => e.Id == productId).FirstOrDefault();
+
+            if (productDb.Quantity > 0)
             {
+                //I will need this in wishlist section
                 productDb.Status = "In Stock";
                 _context.SaveChanges();
                 return true;
@@ -229,50 +252,51 @@ namespace JupiterCapstone.Services
                 productDb.Status = "Out of Stock";
                 _context.SaveChanges();
                 return false;
-            }
-
-           
-        }//if youre adding from the available quantity to the cart, then db quantity should reduce a
-        public bool ReduceFromProductQuantity(string productId)
+            } 
+        }
+        
+        //if youre adding from the available quantity to the cart, then db quantity should reduce a
+        public void DecreaseProductQuantity(string productId)
         {
-            var productDb = _context.Products.Where(e => e.Id == productId).FirstOrDefault();
-            var availableQuantity =productDb.Quantity-1;
+            var productDb = _context.Products.Where(e => e.Id == productId).FirstOrDefault().Quantity - 1;
+            _context.SaveChanges();
           
-            if (availableQuantity>=0)
-            {
-                productDb.Quantity = availableQuantity;
-                productDb.Status = "In Stock";
-                _context.SaveChanges();
-                return true;
-            }
-            else 
-            {
-                productDb.Quantity = 0;
-                productDb.Status = "out of Stock";
-                _context.SaveChanges();
-                return false; 
-            }
+            //if (availableQuantity > 0)
+            //{
+            //    productDb.Quantity = availableQuantity;
+            //    productDb.Status = "In Stock";
+            //    _context.SaveChanges();
+            //    return true;
+            //}
+            //else 
+            //{
+            //    productDb.Quantity = 0;
+            //    productDb.Status = "out of Stock";
+            //    _context.SaveChanges();
+            //    return false; 
+            //}
            
         }
         //if youre removing from the available quantity in the cart, then db quantity should increase
-        public bool AddItemToProductQuantity(string productId)
+        public void IncreaseProductQuantity(string productId)
         {
-            var productDb = _context.Products.Where(e => e.Id == productId).FirstOrDefault();
-            var availableQuantity = productDb.Quantity + 1;
-            if (availableQuantity > 0)
-            {
-                productDb.Quantity = availableQuantity;
-                productDb.Status = "In Stock";
-                _context.SaveChanges();
-                return true;
-            }
-            else 
-            {
-                productDb.Quantity = availableQuantity;
-                productDb.Status = "out of Stock";
-                _context.SaveChanges();
-                return false;
-            }
+            var productDb = _context.Products.Where(e => e.Id == productId).FirstOrDefault().Quantity + 1;
+            _context.SaveChanges();
+
+            //if (availableQuantity > 0)
+            //{
+            //    productDb.Quantity = availableQuantity;
+            //    productDb.Status = "In Stock";
+            //    _context.SaveChanges();
+            //    return true;
+            //}
+            //else 
+            //{
+            //    productDb.Quantity = availableQuantity;
+            //    productDb.Status = "out of Stock";
+            //    _context.SaveChanges();
+            //    return false;
+            //}
 
         }
        
