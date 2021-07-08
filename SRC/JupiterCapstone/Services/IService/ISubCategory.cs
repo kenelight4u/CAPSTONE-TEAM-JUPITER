@@ -10,7 +10,7 @@ namespace JupiterCapstone.Services.IService
 {
     public interface ISubCategory
     {
-        //Task<IEnumerable<ViewSubCategoryDto>> GetAllSubCategoriesAsync();//for a user
+        Task<IEnumerable<ViewSubCategoryDto>> GetAllSubCategoriesAsync();//for a user
         Task<bool> AddSubCategoryAsync(List<AddSubCategoryDto> addSubcategories);
         Task<bool> UpdateSubCategoryAsync(List<UpdateSubCategoryDto> updateSubcategories);
         Task DeleteSubCategoryAsync(List<string> deleteSubcategories); 

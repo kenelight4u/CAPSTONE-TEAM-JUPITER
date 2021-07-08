@@ -26,7 +26,7 @@ namespace JupiterCapstone.Services
 
         public async Task<bool> AddToCartAsync(string productId, string userId)
         {
-            var checkProduct = await _context.Products.FirstOrDefaultAsync(e => e.Id == productId && e.Quantity != 0 );
+            var checkProduct = await _context.Products.FirstOrDefaultAsync(e => e.Id == productId);
             if (checkProduct == null)
             {
                 return false;
@@ -109,6 +109,7 @@ namespace JupiterCapstone.Services
             var userItem = await _context.ShoppingCartItems.Where(e => e.ItemId == cartItemID).FirstOrDefaultAsync();
             if (userItem != null)
             {
+                _productAccess.IncreaseProductQuantityByNumberOfQuantity(userItem.ProductId, userItem.Quantity);
                 _context.ShoppingCartItems.Remove(userItem);
                 await _context.SaveChangesAsync();
             }  
@@ -133,10 +134,6 @@ namespace JupiterCapstone.Services
 
             _productAccess.IncreaseProductQuantity(cartItem.ProductId);
 
-            //var productAccess = _productAccess.AddItemToProductQuantity(cartItem.ProductId);
-            //var availableQuantityAfterEdit = cartItem.Quantity - editCartItem.Quantity;
-
-            //cartItem.Quantity = availableQuantityAfterEdit;
             if (cartItem.Quantity <= 0 )
             {
                 return false;

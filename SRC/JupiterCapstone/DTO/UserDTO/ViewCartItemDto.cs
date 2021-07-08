@@ -17,7 +17,5 @@ namespace JupiterCapstone.DTO.UserDTO
         public string Status { get; set; }
         public string SupplierName{get;set;}
 
-        //public int TotalQuantityAvailable { get; set; }
-        //public int QuantityOfProductInCart { get; set; }
     }
 }

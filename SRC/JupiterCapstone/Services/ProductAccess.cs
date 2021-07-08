@@ -74,7 +74,11 @@ namespace JupiterCapstone.Services
 
         public async Task<IEnumerable<ViewProductDto>> GetAllProductsAsync()
         {
-            var products = await _context.Products.Where(e => e.Quantity != 0).OrderBy(e => e.CreatedDateTime ).ToListAsync();
+            var products = await _context.Products.OrderBy(e => e.CreatedDateTime ).ToListAsync();
+            if (products.Count==0)
+            {
+                return null;
+            }
 
             List<ViewProductDto> viewProduct = new List<ViewProductDto>();
 
@@ -132,7 +136,7 @@ namespace JupiterCapstone.Services
         }
         public async Task<IEnumerable<ViewProductDto>> GetProductsByNameAsync(List<string> products)
         {
-            var productsDb = await _context.Products.Where(e=>e.Quantity!=0).OrderBy(e => e.CreatedDateTime).ToListAsync();
+            var productsDb = await _context.Products.OrderBy(e => e.CreatedDateTime).ToListAsync();
             List<ViewProductDto> viewProduct = new List<ViewProductDto>();
             if (products.Count==0)
             {
@@ -163,7 +167,8 @@ namespace JupiterCapstone.Services
                                 Quantity = aProduct.Quantity,
                                 ProductName = aProduct.ProductName,
                                 Status = InStoreStatus(aProduct.Id),
-                                ImageUrl = aProduct.ImageUrl
+                                ImageUrl = aProduct.ImageUrl,
+                                SubCategoryId=aProduct.SubCategoryId
                                
                                 //IsDeleted = aProduct.IsDeleted
 
@@ -181,7 +186,7 @@ namespace JupiterCapstone.Services
         }
         public async Task<IEnumerable<ViewProductDto>> GetProductsBySubCategoryIdAsync(string subCategoryId)
         {
-            var products = await _context.Products.Where(e => e.SubCategoryId == subCategoryId && e.Quantity != 0)
+            var products = await _context.Products.Where(e => e.SubCategoryId == subCategoryId)
                 .OrderBy(p => p.CreatedDateTime).ToListAsync();
             if (products.Count == 0)
             {
@@ -203,6 +208,7 @@ namespace JupiterCapstone.Services
                         ProductName = product.ProductName,
                         Status = InStoreStatus(product.Id),
                         ImageUrl = product.ImageUrl,
+                        SubCategoryId=product.SubCategoryId
 
                     });
 
@@ -210,7 +216,27 @@ namespace JupiterCapstone.Services
                 return productsdto;
             }
         }
-          
+        public async Task<ViewProductDto> GetProductByIdAsync(string productId)
+        {
+            var product = await _context.Products.Where(e => e.Id == productId).OrderBy(e=>e.CreatedDateTime).FirstOrDefaultAsync();
+            if (product==null)
+            {
+                return null;
+            }
+            ViewProductDto viewProduct = new ViewProductDto()
+            {
+                ProductId = product.Id,
+                Price = product.Price,
+                Description = product.Description,
+                SupplierName = product.SupplierName,
+                Quantity = product.Quantity,
+                ProductName = product.ProductName,
+                Status = InStoreStatus(product.Id),
+                ImageUrl = product.ImageUrl,
+                SubCategoryId=product.SubCategoryId
+            };
+            return viewProduct;
+        }
 
         public async Task SaveChangesAsync()
         {
@@ -267,7 +293,15 @@ namespace JupiterCapstone.Services
             _context.SaveChanges();
 
         }
-       
+        public void IncreaseProductQuantityByNumberOfQuantity(string productId, double quantity)
+        {
+            var productDb = _context.Products.Where(e => e.Id == productId).FirstOrDefault();
+            var availableProduct=productDb.Quantity+quantity;
+            productDb.Quantity = availableProduct;
+            _context.SaveChanges();
+
+        }
+
         public string UploadImage(string filePath)
         {
             Account account = new Account()
