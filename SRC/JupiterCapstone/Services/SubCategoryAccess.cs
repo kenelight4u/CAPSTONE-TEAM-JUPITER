@@ -65,7 +65,7 @@ namespace JupiterCapstone.Services
             await SaveChangesAsync();
         }
 
-       /* public async Task<IEnumerable<ViewSubCategoryDto>> GetAllSubCategoriesAsync()
+        public async Task<IEnumerable<ViewSubCategoryDto>> GetAllSubCategoriesAsync()
         {
             var allSubCategories = await _context.SubCategories.ToListAsync();
             List<ViewSubCategoryDto> viewsubCategory = new List<ViewSubCategoryDto>();
@@ -75,12 +75,12 @@ namespace JupiterCapstone.Services
                 viewsubCategory.Add(new ViewSubCategoryDto()
                 {
                     SubCategoryId = subCategory.Id,
-                    SubCategoryName = subCategory.SubCategoryName,   
+                    SubCategoryName = subCategory.SubCategoryName,
 
                 });
             }
             return viewsubCategory;
-        }*/
+        }
 
 
         public async Task<bool> UpdateSubCategoryAsync(List<UpdateSubCategoryDto> updateSubcategories)

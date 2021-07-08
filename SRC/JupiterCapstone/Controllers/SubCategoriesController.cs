@@ -34,17 +34,18 @@ namespace JupiterCapstone.Controllers
             return Ok(subCategories);
         }
 
-       /* [HttpGet]
-        public IActionResult GetAllSubCategories()
+        [HttpGet]
+        [Route("get-all-subcategories")]
+        public async Task<IActionResult> GetAllSubCategories()
         {
-            var subCategories = _repository.GetAllSubCategories().ToList();
-            if (subCategories.Count == 0)
+            var subCategories =await _repository.GetAllSubCategoriesAsync();
+            if (subCategories== null)
             {
                 return NotFound();
             }
 
             return Ok(subCategories);
-        }*/
+        }
 
         [HttpPost]
         [Route("add-subcategories")]

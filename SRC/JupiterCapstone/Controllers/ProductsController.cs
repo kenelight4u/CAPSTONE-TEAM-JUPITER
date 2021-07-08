@@ -45,7 +45,24 @@ namespace JupiterCapstone.Controllers
                 return NotFound();
             }
 
-            return Ok(allProducts);
+            return Ok(allProducts); 
+        }
+
+        [HttpGet]
+        [Route("get-product-byid")]
+        public async Task<IActionResult> GetProductById(string productId)
+        {
+            if (productId==null)
+            {
+                return NotFound();
+            }
+            var product = await _repository.GetProductByIdAsync(productId);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(product);
         }
 
         [HttpPost]
