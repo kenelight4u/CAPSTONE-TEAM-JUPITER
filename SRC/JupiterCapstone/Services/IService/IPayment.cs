@@ -14,5 +14,11 @@ namespace JupiterCapstone.Services.IService
         bool UpdatePayment(PaymentEM model);
         bool DeletePayment(string productId);
         bool AddPayment(PaymentIM model);
+        IEnumerable<PaymentOM> GetUserPayments(string userId);
+        bool AddCardDetail(CardIM model);
+
+        bool UpdateCardDetails(CardEM model);
+        bool DeleteCardDetail(string cardId);
     }
 }
+  

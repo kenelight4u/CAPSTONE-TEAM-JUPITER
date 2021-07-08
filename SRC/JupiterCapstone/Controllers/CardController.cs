@@ -1,6 +1,6 @@
-﻿using JupiterCapstone.Services.IService;
-using JupiterCapstone.DTO.EditModels;
+﻿using JupiterCapstone.DTO.EditModels;
 using JupiterCapstone.DTO.InputModels;
+using JupiterCapstone.Services.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,31 +10,31 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Controllers
 {
-    //[Route("api/v1/Payment")]
     [ApiController]
-    public class PaymentController : ControllerBase
+
+    public class CardController : ControllerBase
     {
+
         private readonly IPayment _payment;
         private readonly IHttpContextAccessor _httpContext;
         private readonly IUrlHelper _urlHelper;
 
-        public PaymentController(IPayment payment, IHttpContextAccessor httpContext, IUrlHelper urlHelper)
+        public CardController(IPayment payment, IHttpContextAccessor httpContext, IUrlHelper urlHelper)
         {
             _payment = payment;
             _httpContext = httpContext;
             _urlHelper = urlHelper;
         }
 
-
         [HttpPut]
-        [Route("/UpdatePayment")]
-        public async Task<IActionResult> UpdatePayment([FromBody] PaymentEM model)
+        [Route("/UpdateCardDetails")]
+        public async Task<IActionResult> UpdateCardDetails([FromBody] CardEM model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await Task.Run(() => _payment.UpdatePayment(model));
+                    var result = await Task.Run(() => _payment.UpdateCardDetails(model));
                     if (result == true)
                     {
                         return Ok(true);
@@ -50,15 +50,15 @@ namespace JupiterCapstone.Controllers
             }
         }
 
-        [HttpDelete("Remove-Payment/{paymentId}")]
-        public async Task<IActionResult> DeletePayment(string paymentId)
+        [HttpDelete("Remove-CardDetails/{cardid}")]
+        public async Task<IActionResult> DeleteCardDetail(string cardid)
         {
             try
             {
-                var response = await Task.Run(() => _payment.DeletePayment(paymentId));
+                var response = await Task.Run(() => _payment.DeleteCardDetail(cardid));
                 if (response != true)
                 {
-                    return NotFound("Payment not found");
+                    return NotFound("Card detail not found");
                 }
                 if (response == true)
                 {
@@ -73,49 +73,17 @@ namespace JupiterCapstone.Controllers
         }
 
 
-        [HttpGet]
-        [Route("Get-Payment/{paymentId}", Name = "GetPaymentById")]
-        public async Task<IActionResult> GetPaymentById(string paymentId)
-        {
-            try
-            {
-                var payment = await Task.Run(() => _payment.GetPaymentById(paymentId));
-                return Ok(payment);
-            }
-            catch (Exception)
-            {
-                return NotFound("The Payment requested for could not be found.");
-            }
-        }
-
-
-
-        [HttpGet]
-        [Route("Get-UserPayment/{userId}", Name = "GetUserPayment")]
-        public async Task<IActionResult> GetUserPayment(string userId)
-        {
-            try
-            {
-                var payment = await Task.Run(() => _payment.GetUserPayments(userId));
-                return Ok(payment);
-            }
-            catch (Exception)
-            {
-                return NotFound("The Payment requested for could not be found.");
-            }
-        }
-
 
         [HttpPost]
-        [Route("/CreatePayment")]
-        public async Task<IActionResult> CreatePayment([FromBody] PaymentIM model)
+        [Route("/AddCardDetail")]
+        public async Task<IActionResult> AddCardDetail([FromBody] CardIM model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await Task.Run(() => _payment.AddPayment(model));
-                    if (result==true)
+                    var result = await Task.Run(() => _payment.AddCardDetail(model));
+                    if (result == true)
                     {
                         return Ok(result);
                     }
