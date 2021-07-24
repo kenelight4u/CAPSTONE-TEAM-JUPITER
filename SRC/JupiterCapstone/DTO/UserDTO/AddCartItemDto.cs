@@ -8,6 +8,6 @@ namespace JupiterCapstone.DTO.UserDTO
     public class AddCartItemDto
     {
         public string ProductId { get; set; }
-        public string UserId { get; set; }  
+        //public string UserId { get; set; }  
     }
 }

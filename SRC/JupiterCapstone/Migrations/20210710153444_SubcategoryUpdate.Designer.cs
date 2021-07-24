@@ -4,14 +4,16 @@ using JupiterCapstone.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JupiterCapstone.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210710153444_SubcategoryUpdate")]
+    partial class SubcategoryUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,79 +135,6 @@ namespace JupiterCapstone.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("JupiterCapstone.Models.OrderDetail", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("Cancelled")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Confirmed")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Delivered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("EstimatedDeliveryTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("OrderId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrderStatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PaymentMethod")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShippingStatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Shippped")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UsersAddressId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("UsersAddressId");
-
-                    b.ToTable("OrderDetails");
-                });
-
-            modelBuilder.Entity("JupiterCapstone.Models.OrderItem", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("OrderDetailId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("OrderId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProductId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("ProductPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderDetailId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("JupiterCapstone.Models.Payment", b =>
@@ -660,28 +589,6 @@ namespace JupiterCapstone.Migrations
                     b.HasOne("JupiterCapstone.Models.User", null)
                         .WithMany("Orders")
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("JupiterCapstone.Models.OrderDetail", b =>
-                {
-                    b.HasOne("JupiterCapstone.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.HasOne("JupiterCapstone.Models.UsersAddress", "UsersAddress")
-                        .WithMany()
-                        .HasForeignKey("UsersAddressId");
-                });
-
-            modelBuilder.Entity("JupiterCapstone.Models.OrderItem", b =>
-                {
-                    b.HasOne("JupiterCapstone.Models.OrderDetail", "OrderDetail")
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderDetailId");
-
-                    b.HasOne("JupiterCapstone.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId");
                 });
 
             modelBuilder.Entity("JupiterCapstone.Models.Payment", b =>

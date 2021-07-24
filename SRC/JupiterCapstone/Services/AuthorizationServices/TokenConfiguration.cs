@@ -15,7 +15,7 @@ namespace JupiterCapstone.Services.AuthorizationServices
     {
         public string Secret { get; set; }
 
-        public TimeSpan TokenLifetime { get; set; }
+        public TimeSpan TokenLifetime { get; set; } 
 
         public string ValidIssuer { get; set; }
 

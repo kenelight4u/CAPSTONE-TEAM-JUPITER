@@ -13,11 +13,13 @@ namespace JupiterCapstone.Services
 {
     public class SubCategoryAccess : ISubCategory
     {
+       
         private readonly ApplicationDbContext _context;
-
-        public SubCategoryAccess(ApplicationDbContext context)
+        private readonly IImageService _imageService;
+        public SubCategoryAccess(ApplicationDbContext context, IImageService imageService)
         {
             _context = context;
+            _imageService = imageService;
 
         }
      
@@ -42,6 +44,7 @@ namespace JupiterCapstone.Services
                     {
                         Id = Guid.NewGuid().ToString(),
                         SubCategoryName = subCategoriesToAdd.SubCategoryName,
+                        SubCategoryImage= _imageService.UploadImage(subCategoriesToAdd.SubCategoryImage),
                         CategoryId=subCategoriesToAdd.CategoryId
                     };
                     await _context.SubCategories.AddAsync(subCategoryDb);
@@ -67,7 +70,7 @@ namespace JupiterCapstone.Services
 
         public async Task<IEnumerable<ViewSubCategoryDto>> GetAllSubCategoriesAsync()
         {
-            var allSubCategories = await _context.SubCategories.ToListAsync();
+            var allSubCategories = await _context.SubCategories.Include(e=>e.Products).ToListAsync();
             List<ViewSubCategoryDto> viewsubCategory = new List<ViewSubCategoryDto>();
 
             foreach (var subCategory in allSubCategories)
@@ -76,7 +79,9 @@ namespace JupiterCapstone.Services
                 {
                     SubCategoryId = subCategory.Id,
                     SubCategoryName = subCategory.SubCategoryName,
-
+                    SubCategoryImage = subCategory.SubCategoryImage,
+                    QuantityOfSubCategoryProduct = subCategory.Products.Count()
+                    
                 });
             }
             return viewsubCategory;
@@ -96,6 +101,7 @@ namespace JupiterCapstone.Services
                 {
                     var categoryDb = oldCategory.FirstOrDefault(e => e.Id == subcategory.SubCategoryId);
                     categoryDb.SubCategoryName = subcategory.SubCategoryName;
+                    categoryDb.SubCategoryImage = _imageService.UploadImage(subcategory.SubCategoryImage);
 
                 }
                 await SaveChangesAsync();

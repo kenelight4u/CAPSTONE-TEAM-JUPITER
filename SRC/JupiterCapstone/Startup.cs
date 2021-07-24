@@ -66,6 +66,7 @@ namespace JupiterCapstone
             services.AddScoped<IOrder, OrderAccess>();
             services.AddScoped<IPayment, PaymentAccess>();
             services.AddScoped<IWishListActions, WishListActions>();
+            services.AddScoped<IImageService, ImageUpload>();
 
             services.AddControllers().AddNewtonsoftJson(s =>
             {

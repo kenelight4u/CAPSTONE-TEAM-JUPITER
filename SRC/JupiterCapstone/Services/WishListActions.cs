@@ -22,7 +22,7 @@ namespace JupiterCapstone.Services
             _product = product;
         }
 
-        public async Task<bool> AddToWishListAsync(List<AddWishListItemDto> wishListItem)
+        public async Task<bool> AddToWishListAsync(List<AddWishListItemDto> wishListItem, string UserId)
         {
             if (wishListItem.Count == 0)
             {
@@ -32,14 +32,14 @@ namespace JupiterCapstone.Services
             foreach (var itemtoAdd in wishListItem)
             {
 
-                var checkforItem = await _context.WishListItems.FirstOrDefaultAsync( e => e.ProductId == itemtoAdd.ProductId && e.UserId == itemtoAdd.UserId);
+                var checkforItem = await _context.WishListItems.FirstOrDefaultAsync( e => e.ProductId == itemtoAdd.ProductId && e.UserId == UserId);
                 if (checkforItem == null)
                 {
                     WishListItem newwishItem = new WishListItem
                     {
                         ItemId = Guid.NewGuid().ToString(),
                         ProductId = itemtoAdd.ProductId,
-                        UserId = itemtoAdd.UserId,
+                        UserId = UserId,
                         DateCreated = DateTime.Now
                     };
                     await _context.WishListItems.AddAsync(newwishItem);
