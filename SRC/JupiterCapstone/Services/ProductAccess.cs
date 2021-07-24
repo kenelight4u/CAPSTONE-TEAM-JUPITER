@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
 using Microsoft.EntityFrameworkCore;
 
 namespace JupiterCapstone.Services
@@ -16,11 +14,12 @@ namespace JupiterCapstone.Services
     public class ProductAccess : IProduct
     {
         private readonly ApplicationDbContext _context;
+        private readonly IImageService _imageService;
 
-        public ProductAccess(ApplicationDbContext context)
+        public ProductAccess(ApplicationDbContext context, IImageService imageService)
         {
             _context = context;
-
+            _imageService = imageService;
         }
 
         public async Task<bool> AddProductAsync(List<AddProductDto> productsDto)
@@ -45,7 +44,7 @@ namespace JupiterCapstone.Services
                         SupplierName = product.SupplierName,
                        // Status = product.Status,
                         SubCategoryId=product.SubCategoryId,
-                        ImageUrl=UploadImage(product.ImageUrl),
+                        ImageUrl= _imageService.UploadImage(product.ImageUrl),
                         
                     };
 
@@ -123,9 +122,7 @@ namespace JupiterCapstone.Services
                     dbProduct.SupplierName = product.SupplierName;
                     dbProduct.ProductName = product.ProductName;
                     dbProduct.Quantity = product.Quantity;
-                    //dbProduct.IsDeleted = product.IsDeleted;
-                   // dbProduct.Status = product.Status;
-                    dbProduct.ImageUrl = UploadImage(product.ImageUrl);
+                    dbProduct.ImageUrl = _imageService.UploadImage(product.ImageUrl);
 
                 }
                 await SaveChangesAsync();
@@ -302,25 +299,6 @@ namespace JupiterCapstone.Services
 
         }
 
-        public string UploadImage(string filePath)
-        {
-            Account account = new Account()
-            {
-                ApiKey = "199453743568777",
-                ApiSecret = "kWP88_SyXMQjd3MdiW-WotDNpoc",
-                Cloud = "paulayomikun",
-            };
-   
-            Cloudinary cloudinary = new Cloudinary(account);
-            //cloudinary.Api.Secure = true;
-            var uploadParams = new ImageUploadParams()
-            {
-                File = new FileDescription(filePath),
-                Folder = "AduabaProduct",
-                Invalidate = true
-            };
-            var uploadResult = cloudinary.Upload(uploadParams);
-            return uploadResult.SecureUrl.AbsoluteUri;
-        }
+        
     }
 }

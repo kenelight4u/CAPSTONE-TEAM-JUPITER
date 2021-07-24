@@ -3,6 +3,7 @@ using JupiterCapstone.Data;
 using JupiterCapstone.DTO.UserDTO;
 using JupiterCapstone.Models;
 using JupiterCapstone.Services.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Controllers
 {
-    
+    [Authorize]
     [ApiController]
     public class ShippingAddressController : ControllerBase
     {

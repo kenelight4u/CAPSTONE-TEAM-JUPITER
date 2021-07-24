@@ -23,6 +23,7 @@ namespace JupiterCapstone.Models
         public DateTime LastModified { get; set; }
         public virtual Category Category { get; set; }
         public string CategoryId { get; set; }
+        public string SubCategoryImage { get; set; }
         public virtual IEnumerable<Product> Products { get; set; }
 
     }

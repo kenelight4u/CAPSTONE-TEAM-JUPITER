@@ -66,6 +66,7 @@ namespace JupiterCapstone
             services.AddScoped<IOrder, OrderAccess>();
             services.AddScoped<IPayment, PaymentAccess>();
             services.AddScoped<IWishListActions, WishListActions>();
+            services.AddScoped<IImageService, ImageUpload>();
 
             services.AddControllers().AddNewtonsoftJson(s =>
             {
@@ -120,6 +121,9 @@ namespace JupiterCapstone
             {
                 options.Password.RequiredLength = 8; 
             });
+
+            //for httpcontext
+            services.AddHttpContextAccessor();
 
             services.AddControllers();
             services.AddMvc();

@@ -35,7 +35,8 @@ namespace JupiterCapstone.Data
         public virtual DbSet<WishListItem> WishListItems { get; set; } 
 
         public virtual DbSet<UsersAddress> UsersAddresses { get; set; }
-
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
+        public virtual DbSet<OrderDetail> OrderDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

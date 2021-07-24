@@ -1,5 +1,7 @@
 ﻿using JupiterCapstone.DTO.UserDTO;
+using JupiterCapstone.Services;
 using JupiterCapstone.Services.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace JupiterCapstone.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("Wishlist")]
     public class WishListsController : Controller
@@ -24,6 +27,11 @@ namespace JupiterCapstone.Controllers
         [Route("add-items-towishlist")]
         public async Task<IActionResult> AddToWishList([FromBody]List<AddWishListItemDto> addWishList)
         {
+            var contextUser = ClaimsValidator.CheckClaimforUserId(HttpContext.User);
+            if (contextUser == null)
+            {
+                return Unauthorized();
+            }
             foreach (var item in addWishList)
             {
                 var checkquantity = _product.CheckQuantityOfProducts(item.ProductId);
@@ -32,7 +40,7 @@ namespace JupiterCapstone.Controllers
                     return BadRequest(new { message = "Product out of stock" });
                 }
             }
-            var response = await _repository.AddToWishListAsync(addWishList);
+            var response = await _repository.AddToWishListAsync(addWishList, contextUser);
             if (!response)
             {
                 return BadRequest(new { message="Item already exists in your wishList"});
@@ -42,9 +50,14 @@ namespace JupiterCapstone.Controllers
 
         [HttpGet]
         [Route("get-all-wishitems")]
-        public async Task<IActionResult> GetWishListItem([FromQuery] string userId)
+        public async Task<IActionResult> GetWishListItem()
         {
-            var wishlist = await _repository.GetWishListItemsAsync(userId);
+            var contextUser = ClaimsValidator.CheckClaimforUserId(HttpContext.User);
+            if (contextUser == null)
+            {
+                return Unauthorized();
+            }
+            var wishlist = await _repository.GetWishListItemsAsync(contextUser);
             if (wishlist==null)
             {
                 return NotFound();
@@ -54,9 +67,14 @@ namespace JupiterCapstone.Controllers
 
         [HttpDelete]
         [Route("remove-wishlist-items")]
-        public async Task<IActionResult> DeleteWishListItem([FromQuery] string userId, [FromBody] List<string> itemId)
+        public async Task<IActionResult> DeleteWishListItem([FromBody] List<string> itemId)
         {
-            await _repository.RemoveWishListAsync(userId, itemId);
+            var contextUser = ClaimsValidator.CheckClaimforUserId(HttpContext.User);
+            if (contextUser == null)
+            {
+                return Unauthorized();
+            }
+            await _repository.RemoveWishListAsync(contextUser, itemId);
             return NoContent();
 
         }

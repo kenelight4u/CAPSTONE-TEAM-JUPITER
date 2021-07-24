@@ -129,7 +129,7 @@ namespace JupiterCapstone.Services
 
         public async Task<bool> EditItemQuantityInCartAsync(EditCartItemDto editCartItem)
         {
-            var cartItem = await _context.ShoppingCartItems.Where(e => e.ItemId == editCartItem.ItemId ).FirstOrDefaultAsync();
+            var cartItem = await _context.ShoppingCartItems.Where(e => e.ItemId == editCartItem.ItemId).FirstOrDefaultAsync();
             cartItem.Quantity--;
 
             _productAccess.IncreaseProductQuantity(cartItem.ProductId);

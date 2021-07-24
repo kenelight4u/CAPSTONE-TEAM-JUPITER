@@ -9,7 +9,8 @@ namespace JupiterCapstone.DTO.UserDTO
     {
         public string SubCategoryId { get; set; }
         public string SubCategoryName { get; set; }
-
+        public string SubCategoryImage { get; set; }
+        public int QuantityOfSubCategoryProduct { get; set; }
 
     }
 }

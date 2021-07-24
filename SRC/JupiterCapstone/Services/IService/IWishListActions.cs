@@ -10,7 +10,7 @@ namespace JupiterCapstone.Services.IService
    public interface IWishListActions
    {
         
-        Task<bool> AddToWishListAsync(List<AddWishListItemDto> wishListItem);
+        Task<bool> AddToWishListAsync(List<AddWishListItemDto> wishListItem, string UserId);
 
         Task<IEnumerable<ViewWishListItemDto>> GetWishListItemsAsync(string userId);
 

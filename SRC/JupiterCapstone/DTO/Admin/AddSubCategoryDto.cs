@@ -9,5 +9,6 @@ namespace JupiterCapstone.DTO.Admin
     {
       public string CategoryId { get; set; }
         public string SubCategoryName { get; set; }
+        public string SubCategoryImage { get; set; }
     }
 }

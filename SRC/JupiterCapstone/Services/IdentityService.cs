@@ -112,7 +112,7 @@ namespace JupiterCapstone.Services
                     new Claim("UserName", user.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 });
-
+                
                 var userRoles = await _userManager.GetRolesAsync(user);
 
                 foreach (var userRole in userRoles)
@@ -125,7 +125,8 @@ namespace JupiterCapstone.Services
                     Subject = Subject,
                     Issuer =_appSettings.JwtSettings.ValidIssuer,
                     Audience= _appSettings.JwtSettings.ValidAudience,
-                    Expires = DateTime.UtcNow.Add(_appSettings.JwtSettings.TokenLifetime),
+                    //Expires = DateTime.UtcNow.Add(_appSettings.JwtSettings.TokenLifetime),
+                    Expires = DateTime.UtcNow.AddDays(7),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
                 var token = tokenHandler.CreateToken(tokenDescriptor);
