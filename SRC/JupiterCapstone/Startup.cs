@@ -122,6 +122,9 @@ namespace JupiterCapstone
                 options.Password.RequiredLength = 8; 
             });
 
+            //for httpcontext
+            services.AddHttpContextAccessor();
+
             services.AddControllers();
             services.AddMvc();
             services.AddSwaggerGen();
