@@ -16,15 +16,20 @@ namespace JupiterCapstone.Models
 
         [Key]
         public string Id { get; set; }
+
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; }
+
         [Required]
         public DateTime OrderDate { get; set; }
+
         [Required]
         public string Status { get; set; }
+
         [Required] 
         public string PaymentType { get; set; }
+
         public virtual IEnumerable<CartItem> Carts { get; set; } 
     }
 }
