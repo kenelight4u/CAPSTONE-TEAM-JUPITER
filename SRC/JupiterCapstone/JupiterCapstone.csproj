@@ -2,6 +2,9 @@
 
   <PropertyGroup>
 	<TargetFramework>netcoreapp3.1</TargetFramework>
+	<UserSecretsId>243adb40-e3e4-4793-b7a6-378bb4eee127</UserSecretsId>
+	<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	<DockerfileContext>.</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +27,9 @@
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
 	<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.11.1" />
+	<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
 	<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+	<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.11" />
 	<PackageReference Include="SendGrid" Version="9.24.0" />
 	<PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
 	<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.4" />

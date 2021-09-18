@@ -42,10 +42,16 @@ namespace JupiterCapstone
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration["ConnectionStrings:ApplicationDbConnection"]);
-            });
+            //configure the SQL connection string for migration but I commented it out because I changed my Db to postgres
+
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //{
+            //    options.UseSqlServer(Configuration["ConnectionStrings:ApplicationDbConnection"]);
+            //});
+
+            //configure the Postgres connection string for migration
+            services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql
+                    (Configuration.GetConnectionString("PostgreSqlConnection")));
 
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("TokenConfiguration");

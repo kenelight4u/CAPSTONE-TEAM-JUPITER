@@ -18,7 +18,7 @@ namespace JupiterCapstone.Models
         [Required(ErrorMessage ="Subcategory name cannot be left blank")]
         [MaxLength(32, ErrorMessage ="Subcategory name cannot be longer than 32 characters")]
         public string SubCategoryName { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool? IsDeleted { get; set; }
         public DateTime CreatedDateTime { get; set; } = DateTime.Now;
         public DateTime LastModified { get; set; }
         public virtual Category Category { get; set; }
